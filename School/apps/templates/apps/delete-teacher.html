@@ -1,0 +1,13 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}Delete Teacher Page {% endblock %}
+
+{% block content %}
+    <h1>Delete Teacher Page</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <p>Are you sure you want to delete, {{teacher.name}}?</p>
+        <button type="submit">Delete</button>
+    </form>
+    <a href="{% url 'teacher-details' %}">Go back</a>
+{% endblock %}

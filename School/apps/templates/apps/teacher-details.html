@@ -4,15 +4,17 @@
 
 {% block content %}
     <h1>Teacher's Details</h1>
-    <a href="{% url 'create-teacher' %}"><b>Register New Teacher</b></a>
-    <a href="{% url 'admin-page' %}"><b>Go To Homepage</b></a>
-
+    <ul>
+        <li> <a href="{% url 'create-teacher' %}"><b>Register New Teacher</b></a></li>
+        <li><a href="{% url 'admin-page' %}"><b>Go To Homepage</b></a></li>
+    </ul>
     <table>
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Subjects</th>
                 <th>Class Teacher</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -40,6 +42,11 @@
                         </li>
                         {% endfor %}
                     </ul>
+                </td>
+                <td>
+                    <a href="{% url 'update-teacher' teacher.id %}">Edit</a>
+                    <a href="{% url 'delete-teacher' teacher.id %}">Delete</a>
+                   
                 </td>
             </tr>
             {% empty %}

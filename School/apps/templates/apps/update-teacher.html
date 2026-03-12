@@ -1,0 +1,28 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}Update Teacher Page {% endblock %}
+
+{% block content %}
+    <h1>Update Teacher Page</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Name: </label>
+        <input type="text" name="name" value="{{teacher.name}}">
+        <br> <br>
+        <label>Grade: </label> 
+        <select name="grade">
+            <option value="">Not assigned yet.</option>
+            {% for grade in grades %}
+            <option value="{{grade.id}}" {% if grade.teacher == teacher %}selected{% endif %}>{{grade.name}}</option>
+            {% endfor %}
+        </select>
+         <br> <br>
+         <label>Subjects: </label>
+         {% for subject in subjects %}
+         
+         <input type="checkbox" name="subjects" value="{{subject.id}}" {% if subject in teacher.subject.all %}checked{% endif %}>{{subject.name}}
+         {% endfor %}
+         <br><br>
+         <button type="submit">Update</button>
+    </form>
+{% endblock %}

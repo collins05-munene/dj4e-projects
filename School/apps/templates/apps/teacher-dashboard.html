@@ -1,0 +1,48 @@
+{% extends 'apps/base.html' %}
+
+{% block title %} Teacher Dashboard {% endblock %}
+
+{% block content %}
+<ul>
+    <form method="POST" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+    </form>
+    <a href="{% url 'teacher-details' %}">Teacher Details</a>
+    <a href="{% url 'admin-page' %}">Admin Page</a>
+    
+</ul>
+    <h1> Welcome back, <span style="color: rgb(50, 86, 243);">{{user.username}}</span></h1>
+    <h2>Classes</h2>
+    {% if classes %}
+    <ul>
+        {% for grade in classes %}
+        <li>{{grade.name}}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>You are not assigned any class yet.</p>
+    {% endif %}
+
+    <h2>Subjects</h2>
+    {% if subjects %}
+    <ul>
+        {% for subject in subjects %}
+        <li>{{subject.name}}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No subjects assigned. Contact admin.</p>
+    {% endif %}
+
+    <h2>Students</h2>
+    {% if students %}
+    <ul>
+        {% for student in students %}
+            <li>{{Student.name}}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No students in your class.</p>
+    {% endif %}
+{% endblock %}

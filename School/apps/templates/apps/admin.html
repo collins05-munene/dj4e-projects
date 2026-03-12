@@ -3,9 +3,13 @@
 {% block title %} Admin Page {% endblock %}
 
 {% block content %}
-    <h1> Welcome Admin Page</h1>
-    <a href="{% url 'create-student' %}"><b>Add new student.</b></a>
-    <a href="{% url 'teacher-details' %}"><b>View your Teachers</b></a>
+    <h1> Welcome Admin {{user.get_full_name}}</h1>
+    <ul>
+        <li> <a href="{% url 'create-student' %}"><b>Add new student.</b></a></li>
+        <li>  <a href="{% url 'teacher-details' %}"><b>View my Teachers</b></a></li>
+        <li>  <a href="{% url 'teacher-dashboard' %}"><b>My Dashboard</b></a></li>
+    </ul>
+   
     <table>
         <thead style="border-right: 1px solid #111;">
             <tr>

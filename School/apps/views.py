@@ -3,9 +3,43 @@ from django.views.generic import DeleteView
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Student, Grade, Subject, Teacher
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
 
 # Create your views here.
-class AdminPage(View):
+class CustomLoginView(View):
+    def get(self, request):
+        form = AuthenticationForm()
+        context = { 'form': form}
+        return render(request, 'apps/login.html', context)
+    
+    def post(self, request):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            if user.is_staff:
+                return redirect('admin-page')
+            elif hasattr(user, 'teacher'):
+                return redirect('teacher-dashboard')
+            else:
+                return redirect('login')
+        else:
+            context = {
+                "error": 'Invalid username or password'
+            }
+            return render(request, 'apps/login.html', context)
+class AdminPage(LoginRequiredMixin, UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def handle_no_permission(self):
+        return render(self.request, 'apps.not-authorized.html')
+    
     def get(self, request):
         students = Student.objects.all()
         context = {
@@ -48,6 +82,45 @@ class CreateTeacher(View):
             grade.save()
         
         return redirect('teacher-details')
+    
+class UpdateTeacher(View):
+    def get(self, request, id):
+        teacher = get_object_or_404(Teacher, id=id)
+        subjects = Subject.objects.all()
+        grades = Grade.objects.all()
+
+        context = {
+            'teacher': teacher,
+            'subjects': subjects,
+            'grades': grades
+        }
+        return render(request, 'apps/update-teacher.html', context)
+    
+    def post(self, request, id):
+        teacher = get_object_or_404(Teacher, id=id)
+
+        teacher.name = request.POST.get('name')
+        teacher.save()
+        grade_id = request.POST.get('grade')
+        subject_ids = request.POST.getlist('subjects')
+
+        Grade.objects.filter(teacher=teacher).update(teacher=None)
+        if grade_id:
+            grade = Grade.objects.get(id=grade_id)
+            grade.teacher = teacher
+            grade.save()
+
+
+        if subject_ids:
+            teacher.subject.set(subject_ids)
+
+        return redirect('teacher-details')
+
+class TeacherDeleteView(DeleteView):
+    model = Teacher
+    success_url = reverse_lazy('teacher-details')
+    template_name = "apps/delete-teacher.html"
+    pk_url_kwarg = "id"
 
     
 class CreateStudent(View):
@@ -108,3 +181,18 @@ class StudentDeleteView(DeleteView):
     success_url = reverse_lazy('admin-page')
     template_name = "apps/student-delete.html"
     pk_url_kwarg = "adm"
+
+class TeacherDashboard(LoginRequiredMixin, View):
+    def get(self, request):
+        teacher = request.user.teacher
+        classes = Grade.objects.filter(teacher=teacher)
+        students =Student.objects.filter(grade__teacher=teacher)
+        subjects = teacher.subject.all()
+
+        context = {
+            'classes': classes,
+            'students': students,
+            'subjects': subjects
+        }
+
+        return render(request, 'apps/teacher-dashboard.html', context)
