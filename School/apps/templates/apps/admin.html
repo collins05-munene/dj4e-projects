@@ -1,0 +1,49 @@
+{% extends 'apps/base.html' %}
+
+{% block title %} Admin Page {% endblock %}
+
+{% block content %}
+    <h1> Welcome Admin Page</h1>
+    <a href="{% url 'create-student' %}"><b>Add new student.</b></a>
+    <a href="{% url 'teacher-details' %}"><b>View your Teachers</b></a>
+    <table>
+        <thead style="border-right: 1px solid #111;">
+            <tr>
+            <th>Name</th>
+            <th>Admission</th>
+            <th>Grade</th>
+            <th>Subjects</th>
+            <th>Class Teacher</th>
+            <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.name }}</td>    
+                <td>{{ student.adm }}</td>    
+                <td>{{ student.grade }}</td>    
+                <td>
+                    <ul>
+                        {% for subject in student.subjects.all %}
+                        <li>
+                            {{subject.name}}
+                        </li>
+                        {% endfor %}
+
+                    </ul>
+                </td>    
+                <td>{{student.grade.teacher }}</td>
+                <td>
+                    <a href="{% url 'update-student' student.adm %}">Edit</a>
+                    <a href="{% url 'delete-student' student.adm %}">Delete</a>
+                </td>    
+            </tr>
+            {% empty %}
+            <tr>
+                <td>No registered students yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

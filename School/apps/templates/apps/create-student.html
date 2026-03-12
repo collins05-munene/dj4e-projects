@@ -1,0 +1,23 @@
+{% extends 'apps/base.html' %}
+
+{% block title %} Create Student {% endblock %}
+
+{% block content %}
+    <h1>Create a Student</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Name: </label><input type="text" name="name" required>
+        <label>Grade: </label>
+        <select name="grade">
+            <option value="">Select Grade</option>
+            {% for grade in grades %}
+                <option value="{{grade.id}}">{{ grade.name }}</option>
+            {% endfor %}
+        </select>
+        <label>Subjects: </label>
+        {% for subject in subjects %}
+            <input type="checkbox" name="subjects" value="{{subject.id}}">{{subject.name}}
+        {% endfor %}
+        <button type="submit">Add student</button>
+    </form>
+{% endblock %}

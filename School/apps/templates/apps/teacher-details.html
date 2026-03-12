@@ -1,0 +1,52 @@
+{% extends 'apps/base.html' %}
+
+{% block title %} Teacher Details Page {% endblock %}
+
+{% block content %}
+    <h1>Teacher's Details</h1>
+    <a href="{% url 'create-teacher' %}"><b>Register New Teacher</b></a>
+    <a href="{% url 'admin-page' %}"><b>Go To Homepage</b></a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Subjects</th>
+                <th>Class Teacher</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for teacher in teachers %}
+            <tr>
+                <td>{{teacher.name}}</td>
+                <td>
+                    <ul>
+                        {% for subject in teacher.subject.all %}
+                        <li>
+                            {{subject.name}}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        {% for grade in teacher.grade_set.all %}
+                        <li>
+                            {{grade.name}}
+                        </li>
+                        {% empty %}
+                        <li>
+                            No class assigned
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td>No registered teachers yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
