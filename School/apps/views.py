@@ -6,7 +6,8 @@ from .models import Student, Grade, Subject, Teacher
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
-
+from django.contrib.auth.models import User
+from django.contrib import messages
 # Create your views here.
 class CustomLoginView(View):
     def get(self, request):
@@ -48,7 +49,13 @@ class AdminPage(LoginRequiredMixin, UserPassesTestMixin, View):
         return render(request, 'apps/admin.html', context)
     
 
-class TeacherDetails(View):
+class TeacherDetails(LoginRequiredMixin, UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_staff
+    
+    def handle_no_permission(self):
+        return render(self.request, 'apps/not_authorized.html')
+    
     def get(self, request):
         teachers = Teacher.objects.all()
         class_teacher = Grade.objects.all()
@@ -67,21 +74,35 @@ class CreateTeacher(View):
         return render(request, 'apps/create-teacher.html', context)
     
     def post(self, request):
-        name = request.POST.get('name')
-        grade_id = request.POST.get('grade')
-        subject_ids = request.POST.getlist('subjects')
-
-        teacher = Teacher.objects.create(name=name)
       
-        if subject_ids:
-            teacher.subject.set(subject_ids)
+        name = request.POST.get('name')
+        username = request.POST.get('username')
+        password = request.POST.get("password")
+        confirm_password = request.POST.get('confirm_password')
+        selected_subjects = request.POST.getlist('subjects')
+        selected_grade = request.POST.get('grade')
+          
 
-        if grade_id:
-            grade = Grade.objects.get(id=grade_id)
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+            return redirect("create-teacher")
+        
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return redirect("create-teacher")
+        
+        user = User.objects.create_user(username=username, password=password)
+
+        teacher = Teacher.objects.create(user=user, name=name)
+        teacher.subject.set(selected_subjects)
+
+        if selected_grade:
+            grade = Grade.objects.get(id=selected_grade)
             grade.teacher = teacher
             grade.save()
-        
-        return redirect('teacher-details')
+
+        messages.success(request, f"Teacher {name} registered successfully")
+        return redirect('login')
     
 class UpdateTeacher(View):
     def get(self, request, id):
@@ -89,32 +110,51 @@ class UpdateTeacher(View):
         subjects = Subject.objects.all()
         grades = Grade.objects.all()
 
+        assigned_grade_id =None
+        assigned_grade = Grade.objects.filter(teacher=teacher).first()
+        if assigned_grade:
+            assigned_grade_id = assigned_grade.id
+
         context = {
             'teacher': teacher,
             'subjects': subjects,
-            'grades': grades
+            'grades': grades,
+            'assigned_grade_id': assigned_grade_id
         }
         return render(request, 'apps/update-teacher.html', context)
     
     def post(self, request, id):
         teacher = get_object_or_404(Teacher, id=id)
+        user = teacher.user
 
-        teacher.name = request.POST.get('name')
-        teacher.save()
-        grade_id = request.POST.get('grade')
-        subject_ids = request.POST.getlist('subjects')
+        name = request.POST.get('name')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        selected_subjects = request.POST.getlist('subjects')
+        selected_grade = request.POST.get('grade')
 
-        Grade.objects.filter(teacher=teacher).update(teacher=None)
-        if grade_id:
-            grade = Grade.objects.get(id=grade_id)
+        if password and password != confirm_password:
+            messages.error(request, "Passwords do not match")
+            return redirect('update-teacher')
+    
+        if password:
+            user.set_password(password)
+            user.save()
+
+        teacher.name = name
+        teacher.subject.set(selected_subjects)
+
+        if selected_grade:
+            grade = Grade.objects.get(id=selected_grade)
             grade.teacher = teacher
             grade.save()
+        else:
+            Grade.objects.filter(teacher=teacher).update(teacher=None)
 
-
-        if subject_ids:
-            teacher.subject.set(subject_ids)
-
+        teacher.save()
+        messages.success(request, f"Teacher {name} updated successfully. ")
         return redirect('teacher-details')
+
 
 class TeacherDeleteView(DeleteView):
     model = Teacher

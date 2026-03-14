@@ -7,16 +7,23 @@
     <form method="POST">
         {% csrf_token %}
         <label>Name: </label>
-        <input type="text" name="name" value="{{teacher.name}}">
+        <input type="text" name="name" value="{{teacher.name}}" required>
         <br> <br>
-        <label>Grade: </label> 
+        <label>New Password: </label>
+        <input type="password" name="password" placeholder="LEAVE BLANK TO KEEP THE CURRENT PASSWORD">
+        <label>Confirm Password: </label>
+        <input type="password" name="confirm_password" placeholder="LEAVE BLANK IF NOT UPDATING PASSWORD">
+        <br>
+        <br>
+        <label>Class Teacher: </label> 
         <select name="grade">
-            <option value="">Not assigned yet.</option>
+            <option value="">Not assigned.</option>
             {% for grade in grades %}
-            <option value="{{grade.id}}" {% if grade.teacher == teacher %}selected{% endif %}>{{grade.name}}</option>
+            <option value="{{grade.id}}" {% if grade.id == assigned_grade_id  %}selected{% endif %}>{{grade.name}}</option>
             {% endfor %}
         </select>
-         <br> <br>
+         <br>
+         <br>
          <label>Subjects: </label>
          {% for subject in subjects %}
          

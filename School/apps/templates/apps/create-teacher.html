@@ -7,8 +7,14 @@
     <form method="POST">
         {% csrf_token %}
         <label>Name: </label>
-        <input type="text" name="name" required>
-        <br>
+        <input type="text" name="name" placeholder='Enter your fullname' required><br><br>
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Enter your password" required><br><br>
+        <label>Password: </label>
+        <input type="password" name="password" placeholder="Enter you password" required><br><br>
+        <label>Confirm Password</label>
+        <input type="password" name="confirm_password" placeholder="Confirm you password" required>
+        <br> 
         <br>
         <label>Subjects: </label>
         {% for subject in subjects %}
@@ -25,6 +31,13 @@
             {% endfor %}
         </select>
         <br><br>
-        <button type="submit">Register Student</button>
+        <button type="submit">Register Teacher</button>
     </form>
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{message}}</p>
+        {% endfor %}
+    {% endif %}
+    <a href="{% url 'admin-page' %}">Go back</a>
+
 {% endblock %}

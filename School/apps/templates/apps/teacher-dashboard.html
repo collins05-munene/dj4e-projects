@@ -8,8 +8,7 @@
     {% csrf_token %}
     <button type="submit">Logout</button>
     </form>
-    <a href="{% url 'teacher-details' %}">Teacher Details</a>
-    <a href="{% url 'admin-page' %}">Admin Page</a>
+
     
 </ul>
     <h1> Welcome back, <span style="color: rgb(50, 86, 243);">{{user.username}}</span></h1>
