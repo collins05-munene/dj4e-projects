@@ -13,6 +13,7 @@ class CustomLoginView(View):
     def get(self, request):
         form = AuthenticationForm()
         context = { 'form': form}
+
         return render(request, 'apps/login.html', context)
     
     def post(self, request):
@@ -39,7 +40,7 @@ class AdminPage(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.is_staff
 
     def handle_no_permission(self):
-        return render(self.request, 'apps.not-authorized.html')
+        return render(self.request, 'apps/not-authorized.html')
     
     def get(self, request):
         students = Student.objects.all()
@@ -54,7 +55,7 @@ class TeacherDetails(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.is_staff
     
     def handle_no_permission(self):
-        return render(self.request, 'apps/not_authorized.html')
+        return render(self.request, 'apps/not-authorized.html')
     
     def get(self, request):
         teachers = Teacher.objects.all()
