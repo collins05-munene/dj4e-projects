@@ -7,7 +7,70 @@
     <ul>
         <li><a href="{% url 'create-coach' %}">Register Coach</a> </li>
     </ul>
-    <p>
-        More updates coming soon
-    </p>
+    <h2 style="color: blue; text-decoration: underline;">Coach Section</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Id Number</th>
+                <th>Phone Number</th>
+                <th>Date of Birth</th>
+            </tr>
+        </thead>
+        <tbody>
+             {% for coach in coaches %}
+             <tr>
+                <td>{{coach.name}}</td>
+                <td>{{coach.email}}</td>
+                <td>{{coach.id_no}}</td>
+                <td>{{coach.phone_number}}</td>
+                <td>{{coach.date_of_birth}}</td>
+             </tr>
+             {% empty %}
+             <tr>
+                <td>No registered coach yet.</td>
+             </tr>
+             {% endfor %}
+        </tbody>
+    </table> 
+    <h2 style="color: blue; text-decoration: underline;">Player Section</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Id Number</th>
+                <th>Phone Number</th>
+                <th>Date of Birth</th>
+                <th>Playing Position(s)</th>
+                <th>Skills</th>
+                <th>Contract Start</th>
+                <th>Contract End</th>
+                <th>Club From</th>
+                <th>Coach</th>
+            </tr>  
+        </thead>
+        <tbody>
+            {% for player in players %}
+                <tr>
+                    <td>{{player.name}}</td>
+                    <td>{{player.email}}</td>
+                    <td>{{player.id_no}}</td>
+                    <td>{{player.phone_number}}</td>
+                    <td>{{player.date_of_birth}}</td>
+                    <td>{{player.player_position}}</td>
+                    <td>{{player.skills}}</td>
+                    <td>{{player.contract.contract_start}}</td>
+                    <td>{{player.contract.contract_end}}</td>
+                    <td>{{player.club_before}}</td>
+                    <td>{{player.coach}}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="10" style="color: red;">We are working on the players table!!! Sorry for the inconveniences caused.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>      
 {% endblock %}

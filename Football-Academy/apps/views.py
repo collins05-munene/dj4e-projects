@@ -43,9 +43,10 @@ class AdminPage(LoginRequiredMixin, UserPassesTestMixin, View):
     
     def get(self, request):
         players = Player.objects.all()
+        coaches = Coach.objects.all()
         
         context = {
-            'players': players
+            'players': players, 'coaches': coaches
         }
         return render(request, 'apps/admin.html', context)
 
