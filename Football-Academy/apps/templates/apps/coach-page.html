@@ -1,0 +1,9 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}Coach Page{% endblock %}
+
+{% block content %}
+    {% for coach in coaches %}
+        <h1>Coach {{coach.name}}</h1>
+    {% endfor %}
+{% endblock %}

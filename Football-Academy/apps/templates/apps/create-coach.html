@@ -1,0 +1,46 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}Create Coach Page{% endblock %}
+
+{% block content %}
+    <h1>Create Coach Page</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Name: </label>
+        <input type="text" name="name" placeholder="Enter fullnames" required>
+        <br>
+        <br>
+        <label>Email: </label>
+        <input type="text" name="email" placeholder="Enter your email" >
+        <br>
+        <br>
+        <label>Phone Number: </label>
+        <input type="number" name="phone" placeholder="Enter your phone number" required>
+        <br>
+        <br>
+        <label>Id Number: </label>
+        <input type="number" name="id_no" placeholder="Enter your identification number" required>
+        <br>
+        <br>
+        <label>Username: </label>
+        <input type="name" name="username" placeholder="Enter your username" required>
+        <br>
+        <br>
+        <label>Date of Birth: </label>
+        <input type="date" name="dob" required>
+        <br>
+        <br>
+        <label>Password: </label>
+        <input type="password" name="password" required>
+        <br>
+        <br>
+        <label>Confirm Password</label>
+        <input type="password" name="confirm_password" required>
+        <button type="submit">Create</button>
+    </form>
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{message}}</p>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

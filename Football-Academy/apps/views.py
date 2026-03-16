@@ -3,7 +3,9 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from .models import Player, Coach
+from django.contrib import messages
 # Create your views here.
 class CustomLoginView(View):
     def get(self, request):
@@ -19,12 +21,13 @@ class CustomLoginView(View):
 
         if user is not None:
             login(request, user)
-            if hasattr(user, 'player'):
+            if user.is_staff:
+                return redirect("admin-page")
+            elif hasattr(user, 'player'):
                 return redirect('player-page')
             elif hasattr(user, 'coach'):
                 return redirect("coach-page")
-            elif user.is_staff:
-                return redirect("admin-page")
+           
         else:
             context = {
                 "error": "Invalid Credentials"
@@ -46,5 +49,47 @@ class AdminPage(LoginRequiredMixin, UserPassesTestMixin, View):
         }
         return render(request, 'apps/admin.html', context)
 
-        
+class Homepage(View):
+    def get(self, request):
+        return render(request, 'apps/homepage.html')
 
+
+class CreateCoach(View):
+    def get(self, request):
+        coaches = Coach.objects.all()
+        context = {'coaches': coaches}
+
+        return render(request, 'apps/create-coach.html', context)
+
+    def post(self, request):
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        phone_number = request.POST.get("phone")
+        id_no = request.POST.get('id_no')
+        date_of_birth = request.POST.get('dob')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match")
+            return redirect("create-coach")
+        
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists')
+            return redirect("create-coach")
+        
+        user = User.objects.create_user(username=username,password=password)
+
+        coach = Coach.objects.create(user=user, name=name, email=email, phone_number=phone_number, id_no=id_no, date_of_birth=date_of_birth)
+
+        messages.success(request, f"Coach {name} registered successfully")
+        return redirect("login")
+
+
+class CoachPage(View):
+    def get(self, request):
+        coaches = Coach.objects.all()
+        context = {'coaches': coaches}
+
+        return render(request, 'apps/coach-page.html', context)

@@ -4,6 +4,9 @@
 
 {% block content %}
     <h1>Welcome to the Admin Page {{request.user}}</h1>
+    <ul>
+        <li><a href="{% url 'create-coach' %}">Register Coach</a> </li>
+    </ul>
     <p>
         More updates coming soon
     </p>

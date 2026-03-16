@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date
 from django.core.validators import RegexValidator
+from django.contrib.auth.models import User
 
 # Create your models here.
 phone_validator = RegexValidator(
@@ -14,6 +15,7 @@ id_validator = RegexValidator(
 )
 class Coach(models.Model):
     name = models.CharField(max_length=30)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=10,validators=[phone_validator])
     id_no = models.CharField(max_length=8,validators=[id_validator])
@@ -90,6 +92,7 @@ class Contract(models.Model):
     
 class Player(models.Model):
     name = models.CharField(max_length=30)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     email = models.EmailField(unique=True)
     date_of_birth = models.DateField()
     phone_number = models.CharField(max_length=10, validators=[phone_validator])
