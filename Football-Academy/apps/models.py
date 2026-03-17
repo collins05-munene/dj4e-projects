@@ -28,7 +28,7 @@ class Coach(models.Model):
         return today.year - self.date_of_birth.year - (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day)
     
     def __str__(self):
-        return {self.name}
+        return f'{self.name}'
     
 
 class Position(models.Model):
@@ -86,6 +86,7 @@ class Club(models.Model):
 class Contract(models.Model):
     contract_start = models.DateField()
     contract_end = models.DateField()
+    salary = models.DecimalField(max_digits=10, decimal_places=2, null=True)
 
     def __str__(self):
         return f'{self.contract_start} | {self.contract_end}'
@@ -98,7 +99,7 @@ class Player(models.Model):
     phone_number = models.CharField(max_length=10, validators=[phone_validator])
     id_no = models.CharField(max_length=8, validators=[id_validator], blank=True)
     skills = models.ManyToManyField(Skills)
-    coach = models.ForeignKey(Coach, on_delete=models.SET)
+    coach = models.ForeignKey(Coach, on_delete=models.SET_NULL, null=True)
     player_position = models.ManyToManyField(Position)
     contract = models.OneToOneField(Contract, on_delete=models.CASCADE)
     club_before = models.ForeignKey(Club, on_delete=models.SET_NULL, null=True, blank=True, related_name="previous_players")
@@ -115,11 +116,11 @@ class Player(models.Model):
     @property
     def age(self):
         today = date.today()
-        return today.year - self.date_of_birth.year - (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day)
-    
+        return today.year - self.date_of_birth.year - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
+
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"{self.name} | {self.get_acitivity_display()}"
+        return f"{self.name} | {self.get_activity_display()}"
 

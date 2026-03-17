@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from .models import Player, Coach
 from django.contrib import messages
+from .forms import ContractForm, PlayerForm
+from django.db import transaction
 # Create your views here.
 class CustomLoginView(View):
     def get(self, request):
@@ -53,6 +55,13 @@ class AdminPage(LoginRequiredMixin, UserPassesTestMixin, View):
 class Homepage(View):
     def get(self, request):
         return render(request, 'apps/homepage.html')
+    
+class CoachPage(View):
+    def get(self, request):
+        coaches = Coach.objects.all()
+        context = {'coaches': coaches}
+
+        return render(request, 'apps/coach-page.html', context)
 
 
 class CreateCoach(View):
@@ -87,10 +96,31 @@ class CreateCoach(View):
         messages.success(request, f"Coach {name} registered successfully")
         return redirect("login")
 
-
-class CoachPage(View):
+class CreatePlayer(View):
     def get(self, request):
-        coaches = Coach.objects.all()
-        context = {'coaches': coaches}
+        context = {'player_form': PlayerForm(), 'contract_form': ContractForm()}
+        return render(request, 'apps/create-player.html', context)
+    
+    def post(self, request):
+        player_form = PlayerForm(request.POST)
+        contract_form = ContractForm(request.POST)
 
-        return render(request, 'apps/coach-page.html', context)
+        if player_form.is_valid() and contract_form.is_valid():
+            try:
+                with transaction.atomic():
+                    contract = contract_form.save()
+                    player = player_form.save(commit=False)
+                    player.contract = contract
+                    player.save()
+                    player_form.save_m2m()
+                return redirect('players-list')
+            except Exception as e:
+                context = {
+                    'player_form': player_form,
+                    'contract_form': contract_form,
+                    'error': str(e)
+                }
+                return render(request, 'create-player.html', context) 
+            
+        context = {'player_form': player_form, 'contract_form': contract_form}
+        return render(request, 'apps/create-player.html', context)             
