@@ -2,23 +2,18 @@ from django.forms import ModelForm
 from django import forms
 from .models import Contract, Player
 
-class ContractForm(ModelForm):
-    class Meta:
-        model = Contract
-        fields = ['contract_start', "contract_end", 'salary']
-        widgets = {
-            'contract_start': forms.DateInput(attrs={'type': 'date'}),
-            'contract_end': forms.DateInput(attrs={'type': 'date'}),
-            'salary': forms.NumberInput(attrs={'step': '0.01'}),
-        }
-        
-class PlayerForm(ModelForm):
+class PlayerRegisterForm(ModelForm):
+    username = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
     class Meta:
         model = Player
-        exclude = ['contract', 'created-at']
+        fields = ['name', 'email', 'date_of_birth', 'phone_number','id_no','skills','coach','player_position','club_before','current_club','activity']
         widgets = {
-            'email': forms.EmailInput(attrs={'placeholder': 'player@gmail.com'}),
-            'phone_number': forms.TextInput(attrs={'type': 'tel', 'pattern': '[0-9]{10}'}),
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
-            'id_no': forms.TextInput(attrs={'max_length': '8'})
+            'phone_number': forms.TextInput(attrs={'type': 'tel', 'placeholder': 'Enter phone number'}),
+            'id_no': forms.TextInput(attrs={'type': 'number', 'placeholder': "Enter your ID number"}),
+            'skills': forms.CheckboxSelectMultiple(),
+            'player_position': forms.CheckboxSelectMultiple(),
+
         }

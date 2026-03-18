@@ -70,7 +70,7 @@ class Skills(models.Model):
     skills = models.CharField(max_length=30, choices=PLAYER_SKILLS)
 
     def __str__(self):
-        return self.get_skill_display()
+        return self.get_skills_display()
     
 class Club(models.Model):
     name = models.CharField(max_length=20, unique=True)
@@ -101,7 +101,7 @@ class Player(models.Model):
     skills = models.ManyToManyField(Skills)
     coach = models.ForeignKey(Coach, on_delete=models.SET_NULL, null=True)
     player_position = models.ManyToManyField(Position)
-    contract = models.OneToOneField(Contract, on_delete=models.CASCADE)
+    contract = models.OneToOneField(Contract, on_delete=models.CASCADE, null=True)
     club_before = models.ForeignKey(Club, on_delete=models.SET_NULL, null=True, blank=True, related_name="previous_players")
     current_club = models.ForeignKey(Club, on_delete=models.SET_NULL, null=True, related_name='current_players')
     created_at = models.DateTimeField(auto_now_add=True)
