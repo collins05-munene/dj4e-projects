@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from .models import Player, Coach
 from django.contrib import messages
-from .forms import ContractForm, PlayerForm
+from .forms import PlayerRegisterForm
 from django.db import transaction
 # Create your views here.
 class CustomLoginView(View):
@@ -96,31 +96,41 @@ class CreateCoach(View):
         messages.success(request, f"Coach {name} registered successfully")
         return redirect("login")
 
-class CreatePlayer(View):
-    def get(self, request):
-        context = {'player_form': PlayerForm(), 'contract_form': ContractForm()}
-        return render(request, 'apps/create-player.html', context)
+class RegisterPlayer(View):
+    def get(self,request):
+        form = PlayerRegisterForm()
+        context = {'form': form}
+        return render(request, 'apps/register-player.html', context)
     
     def post(self, request):
-        player_form = PlayerForm(request.POST)
-        contract_form = ContractForm(request.POST)
+        form = PlayerRegisterForm(request.POST)
+        
+        if form.is_valid():
+            password = form.cleaned_data['password']
+            confirm_password = form.cleaned_data['confirm_password']
+            username = form.cleaned_data['username']
 
-        if player_form.is_valid() and contract_form.is_valid():
-            try:
-                with transaction.atomic():
-                    contract = contract_form.save()
-                    player = player_form.save(commit=False)
-                    player.contract = contract
-                    player.save()
-                    player_form.save_m2m()
-                return redirect('players-list')
-            except Exception as e:
-                context = {
-                    'player_form': player_form,
-                    'contract_form': contract_form,
-                    'error': str(e)
-                }
-                return render(request, 'create-player.html', context) 
-            
-        context = {'player_form': player_form, 'contract_form': contract_form}
-        return render(request, 'apps/create-player.html', context)             
+            if password != confirm_password:
+                messages.error(request, 'Username already exists')
+                return redirect('register-player')
+        
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'Username already exists')
+                return redirect("register-player")
+            # Create User
+            user = User.objects.create(
+                username = form.cleaned_data['username']
+            )
+            user.set_password(password)
+            user.save()
+            #Create player(without saving yet)
+
+            player = form.save(commit=False)
+            player.user = user
+            player.save()
+
+            #Save many-to-many fields
+            form.save_m2m()
+            return redirect('admin-page')
+        context = {'forms': form}
+        return render(request, 'apps/register-player.html', context)
