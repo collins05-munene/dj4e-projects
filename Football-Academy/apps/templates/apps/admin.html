@@ -5,8 +5,8 @@
 {% block content %}
     <h1>Welcome to the Admin Page {{request.user}}</h1>
     <ul>
-        <li><a href="{% url 'create-coach' %}">Register Coach</a> </li>
-        <Li><a href="{% url 'register-player' %}">Register Player</a></Li>
+        <li><a href="{% url 'apps:create-coach' %}">Register Coach</a> </li>
+        <Li><a href="{% url 'apps:register-player' %}">Register Player</a></Li>
     </ul>
     <h2 style="color: blue; text-decoration: underline;">Coach Section</h2>
     <table>
@@ -50,6 +50,7 @@
                 <th>Contract End</th>
                 <th>Club From</th>
                 <th>Coach</th>
+                <th>Actions</th>
             </tr>  
         </thead>
         <tbody>
@@ -74,6 +75,9 @@
                     <td>{{player.contract.contract_end}}</td>
                     <td>{{player.club_before}}</td>
                     <td>{{player.coach}}</td>
+                    <td>
+                        <a href="{% url 'apps:update-player' player.id %}">Update Player</a>
+                    </td>
                 </tr>
             {% empty %}
                 <tr>

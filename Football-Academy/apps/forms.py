@@ -15,5 +15,15 @@ class PlayerRegisterForm(ModelForm):
             'id_no': forms.TextInput(attrs={'type': 'number', 'placeholder': "Enter your ID number"}),
             'skills': forms.CheckboxSelectMultiple(),
             'player_position': forms.CheckboxSelectMultiple(),
+        }
 
+class PlayerUpdateForm(ModelForm):
+    class Meta:
+        model = Player
+        fields = ['name', 'email', 'date_of_birth', 'phone_number', 'id_no', 'skills', 'coach', 'player_position', 'club_before', 'current_club', 'activity'
+        ]
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+            'skills': forms.CheckboxSelectMultiple(),
+            'player_position': forms.CheckboxSelectMultiple(),
         }

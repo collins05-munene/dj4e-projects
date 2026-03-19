@@ -1,13 +1,16 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
+from django.views.generic.edit import UpdateView
+from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from .models import Player, Coach
 from django.contrib import messages
-from .forms import PlayerRegisterForm
+from .forms import PlayerRegisterForm, PlayerUpdateForm
 from django.db import transaction
+
 # Create your views here.
 class CustomLoginView(View):
     def get(self, request):
@@ -142,3 +145,10 @@ class RegisterPlayer(View):
             return redirect('admin-page')
         context = {'forms': form}
         return render(request, 'apps/register-player.html', context)
+    
+class UpdatePlayer(UpdateView):
+    model = Player
+    form_class = PlayerUpdateForm
+    template_name = 'apps/update-player.html'
+    success_url = reverse_lazy('apps:admin-page')
+
