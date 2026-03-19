@@ -44,7 +44,7 @@
                 <th>Id Number</th>
                 <th>Phone Number</th>
                 <th>Date of Birth</th>
-                <th>Playing Position(s)</th>
+                <th>Position(s)</th>
                 <th>Skills</th>
                 <th>Contract Start</th>
                 <th>Contract End</th>
@@ -60,8 +60,16 @@
                     <td>{{player.id_no}}</td>
                     <td>{{player.phone_number}}</td>
                     <td>{{player.date_of_birth}}</td>
-                    <td>{{player.player_position}}</td>
-                    <td>{{player.skills}}</td>
+                    {% for position in player.player_position.all %}
+                        <td>{{position.position}}</td>
+                    {% endfor %}
+                    <td>
+                        <div class="skills-cell">
+                            {% for skill in player.skills.all %}
+                                <span class="skill">{{skill.skills}}</span>
+                            {% endfor %}
+                        </div>
+                    </td>
                     <td>{{player.contract.contract_start}}</td>
                     <td>{{player.contract.contract_end}}</td>
                     <td>{{player.club_before}}</td>
