@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.views.generic.edit import UpdateView
+from django.views.generic.detail import DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import AuthenticationForm
@@ -107,12 +108,12 @@ class UpdateCoach(UpdateView):
     template_name = 'apps/update-player.html'
     success_url = reverse_lazy('apps:admin-page')
 
-class PlayerPage(View):
-    def get(self, request):
-        players = Player.objects.all()
-        context = {'players': players}
-        return render(request, 'apps/player.html', context)
+class PlayerPage(DetailView):
+    model = Player
+    template_name = 'apps/player.html'
+    context_object_name = "player"
 
+    
 class RegisterPlayer(View):
     def get(self,request):
         form = PlayerRegisterForm()
@@ -128,12 +129,12 @@ class RegisterPlayer(View):
             username = form.cleaned_data['username']
 
             if password != confirm_password:
-                messages.error(request, 'Username already exists')
-                return redirect('register-player')
+                messages.error(request, f'{username} Username already exists')
+                return redirect('apps:register-player')
         
             if User.objects.filter(username=username).exists():
                 messages.error(request, 'Username already exists')
-                return redirect("register-player")
+                return redirect("apps:register-player")
             # Create User
             user = User.objects.create(
                 username = form.cleaned_data['username']
@@ -148,7 +149,7 @@ class RegisterPlayer(View):
 
             #Save many-to-many fields
             form.save_m2m()
-            return redirect('admin-page')
+            return redirect('apps:admin-page')
         context = {'forms': form}
         return render(request, 'apps/register-player.html', context)
     

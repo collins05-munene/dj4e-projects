@@ -3,16 +3,36 @@
 {% block title %}Player Page{% endblock %}
 
 {% block content %}
-    <h1>Welcome our beloved player.</h1>
-    {% if players %}
-        {% for player in players %}
-            <p>{{player.name}}</p>
-            <p>
-                {% for position in player.player_position.all %}
-                Position(s): {{ position.position}}
-                {% endfor %}
-                
-            </p>
-        {% endfor %}
+<div class="player-card">
+    <p><strong>Name:</strong> {{player.name}}</p>
+    <p><strong>Email:</strong> {{ player.email }}</p>
+    <p><strong>Phone:</strong> {{ player.phone_number }}</p>
+    <p><strong>ID:</strong> {{ player.id_no }}</p>
+    <p><strong>Age:</strong> {{ player.age }}</p>
+
+    <p><strong>Coach:</strong> {{ player.coach }}</p>
+    <p><strong>Current Club:</strong> {{ player.current_club }}</p>
+    <p><strong>Previous Club:</strong> {{ player.club_before }}</p>
+
+    <h3>Positions</h3>
+    {% for position in player.player_position.all %}
+        <span class="tag position">{{ position.position }}</span>
+    {% empty %}
+        <p>No positions</p>
+    {% endfor %}
+
+    <h3>Skills</h3>
+    {% for skill in player.skills.all %}
+        <span class="tag skill">{{ skill.skills }}</span>
+    {% empty %}
+        <p>No skills</p>
+    {% endfor %}
+
+    <h3>Contract</h3>
+    {% if player.contract %}
+        <p>{{ player.contract.contract_start }} - {{ player.contract.contract_end }}</p>
+    {% else %}
+        <p>No contract</p>
     {% endif %}
+</div>
 {% endblock %}

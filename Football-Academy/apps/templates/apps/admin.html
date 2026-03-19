@@ -9,7 +9,7 @@
         <Li><a href="{% url 'apps:register-player' %}">Register Player</a></Li>
     </ul>
     <h2 style="color: blue; text-decoration: underline;">Coach Section</h2>
-    <table>
+    <table class="coach-table">
         <thead>
             <tr>
                 <th>Name</th>
@@ -28,7 +28,7 @@
                 <td>{{coach.id_no}}</td>
                 <td>{{coach.phone_number}}</td>
                 <td>{{coach.age}}</td>
-                <td><a href="{% url 'apps:update-coach' coach.id %}">Update Coach</a></td>
+                <td><a class="btn-update" href="{% url 'apps:update-coach' coach.id %}">Update Coach</a></td>
              </tr>
              {% empty %}
              <tr>
@@ -38,55 +38,62 @@
         </tbody>
     </table> 
     <h2 style="color: blue; text-decoration: underline;">Player Section</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Id Number</th>
-                <th>Phone Number</th>
-                <th>Age</th>
-                <th>Position(s)</th>
-                <th>Skills</th>
-                <th>Contract Start</th>
-                <th>Contract End</th>
-                <th>Club From</th>
-                <th>Coach</th>
-                <th>Actions</th>
-            </tr>  
-        </thead>
-        <tbody>
-            {% for player in players %}
+    <div class="table-container">
+        <table class="player-table">
+            <thead>
                 <tr>
-                    <td>{{player.name}}</td>
-                    <td>{{player.email}}</td>
-                    <td>{{player.id_no}}</td>
-                    <td>{{player.phone_number}}</td>
-                    <td>{{player.age}}</td>
-                    {% for position in player.player_position.all %}
-                        <td>{{position.position}}</td>
-                    {% endfor %}
-                    <td>
-                        <div class="skills-cell">
-                            {% for skill in player.skills.all %}
-                                <span class="skill">{{skill.skills}}</span>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Id Number</th>
+                    <th>Phone Number</th>
+                    <th>Age</th>
+                    <th>Position(s)</th>
+                    <th>Skills</th>
+                 
+                    <th>Club From</th>
+                    <th>Coach</th>
+                    <th>Actions</th>
+                </tr>  
+            </thead>
+
+            <tbody>
+                {% for player in players %}
+                    <tr>
+                        <td>{{player.name}}</td>
+                        <td class="truncate">{{player.email}}</td>
+                        <td>{{player.id_no}}</td>
+                        <td>{{player.phone_number}}</td>
+                        <td>{{player.age}}</td>
+                        <td>
+                            {% for position in player.player_position.all %}
+                                <span class="tag position">{{position.position}}</span>
+                            {% empty %}
+                                <span class="muted">None</span>
                             {% endfor %}
-                        </div>
-                    </td>
-                    <td>{{player.contract.contract_start}}</td>
-                    <td>{{player.contract.contract_end}}</td>
-                    <td>{{player.club_before}}</td>
-                    <td>{{player.coach}}</td>
-                    <td>
-                        <a href="{% url 'apps:update-player' player.id %}">Update Player</a>
-                        
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="10" style="color: red;">We are working on the players table!!! Sorry for the inconveniences caused.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>      
+                        </td>
+                        <td>
+                            <div class="skills-cell">
+                                {% for skill in player.skills.all %}
+                                    <span class="skill">{{skill.skills}}</span>
+                                {% empty %}
+                                    <span class="muted">Empty</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                       
+                        <td>{{player.club_before}}</td>
+                        <td>{{player.coach}}</td>
+                        <td>
+                            <a class="btn-update" href="{% url 'apps:update-player' player.id %}">Update Player</a> 
+                            <a class="btn-update" href="{% url 'apps:player-page' player.id %}">View Player</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="10" style="color: red;">We are working on the players table!!! Sorry for the inconveniences caused.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table> 
+    </div>     
 {% endblock %}

@@ -1,21 +1,221 @@
 <!DOCTYPE html>
 <html>
     <head><title>{% block title %} {% endblock %}</title><style>
-.skills-cell {
-  display: flex;
-  flex-wrap: wrap;      /* wrap skills to next line */
-  gap: 5px;
-  max-width: 200px;     /* limit cell width */
-  overflow-y: auto;     /* scroll if too many skills vertically */
+body {
+        font-family: Arial;
+        padding: 20px;
+    }
+    form {
+        max-width: 500px;
+    }
+    div {
+        margin-bottom: 10px;
+    }
+    label {
+        display:block;
+        font-weight: bold;
+    }
+    .player-fields {
+        margin-left: 3rem;
+    }
+    .coach-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.coach-table thead {
+    background-color: #1f2937; /* dark header */
+    color: #fff;
+}
+
+.coach-table th,
+.coach-table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.coach-table th {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.coach-table tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s ease;
+}
+
+.coach-table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+/* Zebra striping */
+.coach-table tbody tr:nth-child(even) {
+    background-color: #f3f4f6;
+}
+
+
+/* Empty state */
+.empty {
+    text-align: center;
+    padding: 20px;
+    color: #6b7280;
+    font-style: italic;
+}
+.table-container {
+    overflow-x: auto;
+}
+
+.player-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.player-table thead {
+    background: #111827;
+    color: #fff;
+}
+
+.player-table th,
+.player-table td {
+    padding: 12px 14px;
+    text-align: left;
+    vertical-align: top;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+.player-table th {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.player-table tbody tr {
+    border-bottom: 1px solid #eee;
+}
+
+.player-table tbody tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+.player-table tbody tr:hover {
+    background: #f3f4f6;
+}
+
+/* Tags (skills + positions) */
+.tag {
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 2px;
+    font-size: 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.position {
+    background: #dbeafe;
+    color: #1e40af;
 }
 
 .skill {
-  background-color: #7299ec;
-  color: rgb(0, 0, 0);
-  padding: 3px 6px;
-  border-radius: 5px;
-  font-size: 12px;
-  white-space: nowrap;
+    background: #dcfce7;
+    color: #166534;
+}
+
+/* Skills container */
+.skills-cell {
+    max-width: 200px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Long text (email) */
+.truncate {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Button */
+.btn-update {
+    padding: 6px 12px;
+    background: #2563eb;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+.btn-update:hover {
+    background: #1d4ed8;
+}
+
+/* Empty state */
+.empty {
+    text-align: center;
+    padding: 20px;
+    color: #6b7280;
+    font-style: italic;
+}
+
+/* Muted text */
+.muted {
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.player-card {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    border-radius: 8px;
+}
+
+.player-card h3 {
+    margin-top: 20px;
+}
+
+.tag {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 3px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.position {
+    background: #dbeafe;
+}
+
+.skill {
+    background: #dcfce7;
+}
+
+.btn-view {
+    background: #16a34a;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-right: 5px;
 }
 </style></head>
     <body>

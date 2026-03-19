@@ -3,20 +3,7 @@
 {% block title %}Create Player Page
 {% endblock %}
 <style>
-    body {
-        font-family: Arial;
-        padding: 20px;
-    }
-    form {
-        max-width: 500px;
-    }
-    div {
-        margin-bottom: 10px;
-    }
-    label {
-        display:block;
-        font-weight: bold;
-    }
+    
 </style>
 
 {% block content %}
@@ -24,6 +11,7 @@
     <form method="POST">
         {% csrf_token %}
         <!-- User Fields-->
+         <h2>User Fields</h2>
         <div>
             <label>Username: </label>
             {{form.username}}
@@ -36,51 +24,54 @@
             <label>Confirm Password: </label>
             {{form.confirm_password}}
         </div>
-        <!--Player Fields-->
-        <div>
-            <label>
-                Name: 
-            </label>{{form.name}}
-        </div>
-        <div>
-            <label>Email: </label>
-            {{form.email}}
-        </div>
-        <div>
-            <label>Date of Birth: </label>
-            {{form.date_of_birth}}
-        </div>
-        <div>
-            <label>Phone Number: </label>
-            {{form.phone_number}}
-        </div>
-        <div>
-            <label>ID Number: </label>
-            {{form.id_no}}
-        </div>
-        <div>
-            <label>Coach: </label>
-            {{form.coach}}
-        </div>
-        <div>
-            <label>Previous Club: </label>
-            {{form.club_before}}
-        </div>
-        <div>
-            <label>Current Club</label>
-            {{form.current_club}}
-        </div>
-        <div>
-            <label>Activity: </label>
-            {{form.activity}}
-        </div>
-        <div>
-            <label>Skills: </label>
-            {{form.skills}}
-        </div>
-        <div>
-            <label>Player Position: </label>
-            {{form.player_position}}
+        <div class="player-fields">
+            <h2>Player Fields</h2>
+            <!--Player Fields-->
+            <div>
+                <label>
+                    Name: 
+                </label>{{form.name}}
+            </div>
+            <div>
+                <label>Email: </label>
+                {{form.email}}
+            </div>
+            <div>
+                <label>Date of Birth: </label>
+                {{form.date_of_birth}}
+            </div>
+            <div>
+                <label>Phone Number: </label>
+                {{form.phone_number}}
+            </div>
+            <div>
+                <label>ID Number: </label>
+                {{form.id_no}}
+            </div>
+            <div>
+                <label>Coach: </label>
+                {{form.coach}}
+            </div>
+            <div>
+                <label>Previous Club: </label>
+                {{form.club_before}}
+            </div>
+            <div>
+                <label>Current Club</label>
+                {{form.current_club}}
+            </div>
+            <div>
+                <label>Activity: </label>
+                {{form.activity}}
+            </div>
+            <div>
+                <label>Skills: </label>
+                {{form.skills}}
+            </div>
+            <div>
+                <label>Player Position: </label>
+                {{form.player_position}}
+            </div>
         </div>
         <input type="submit" value="Register Player">
     </form>
