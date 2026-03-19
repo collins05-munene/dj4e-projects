@@ -1,0 +1,18 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}Player Page{% endblock %}
+
+{% block content %}
+    <h1>Welcome our beloved player.</h1>
+    {% if players %}
+        {% for player in players %}
+            <p>{{player.name}}</p>
+            <p>
+                {% for position in player.player_position.all %}
+                Position(s): {{ position.position}}
+                {% endfor %}
+                
+            </p>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
