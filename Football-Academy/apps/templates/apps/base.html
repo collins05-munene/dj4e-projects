@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html>
-    <head><title>{% block title %} {% endblock %}</title></head>
+    <head><title>{% block title %} {% endblock %}</title><style>
+.skills-cell {
+  display: flex;
+  flex-wrap: wrap;      /* wrap skills to next line */
+  gap: 5px;
+  max-width: 200px;     /* limit cell width */
+  overflow-y: auto;     /* scroll if too many skills vertically */
+}
+
+.skill {
+  background-color: #7299ec;
+  color: rgb(0, 0, 0);
+  padding: 3px 6px;
+  border-radius: 5px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+</style></head>
     <body>
         {% block content %}{% endblock %}
     </body>
