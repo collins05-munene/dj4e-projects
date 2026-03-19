@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import AuthenticationForm
@@ -26,7 +26,7 @@ class CustomLoginView(View):
             if user.is_staff:
                 return redirect("admin-page")
             elif hasattr(user, 'player'):
-                return redirect('player-page')
+                return redirect('player-page', pk=user.player.pk)
             elif hasattr(user, 'coach'):
                 return redirect("coach-page")
            
@@ -94,7 +94,15 @@ class CreateCoach(View):
         coach = Coach.objects.create(user=user, name=name, email=email, phone_number=phone_number, id_no=id_no, date_of_birth=date_of_birth)
 
         messages.success(request, f"Coach {name} registered successfully")
+
+
         return redirect("login")
+
+class PlayerPage(View):
+    def get(self, request):
+        players = Player.objects.all()
+        context = {'players': players}
+        return render(request, 'apps/player.html', context)
 
 class RegisterPlayer(View):
     def get(self,request):
