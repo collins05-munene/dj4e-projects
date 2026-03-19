@@ -10,5 +10,6 @@ urlpatterns = [
     path('coach-page', views.CoachPage.as_view(), name="coach-page"),
     path('register-player', views.RegisterPlayer.as_view(), name='register-player'),
     path('player-page/', views.PlayerPage.as_view(), name='player-page'),
-    path('update/<int:pk>/', views.UpdatePlayer.as_view(), name='update-player')
+    path('update/<int:pk>/', views.UpdatePlayer.as_view(), name='update-player'),
+    path('update-coach/<int:pk>/', views.UpdateCoach.as_view(), name='update-coach'),
 ]
