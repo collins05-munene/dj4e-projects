@@ -16,7 +16,8 @@
                 <th>Email</th>
                 <th>Id Number</th>
                 <th>Phone Number</th>
-                <th>Date of Birth</th>
+                <th>Age</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -26,7 +27,8 @@
                 <td>{{coach.email}}</td>
                 <td>{{coach.id_no}}</td>
                 <td>{{coach.phone_number}}</td>
-                <td>{{coach.date_of_birth}}</td>
+                <td>{{coach.age}}</td>
+                <td><a href="{% url 'apps:update-coach' coach.id %}">Update Coach</a></td>
              </tr>
              {% empty %}
              <tr>
@@ -43,7 +45,7 @@
                 <th>Email</th>
                 <th>Id Number</th>
                 <th>Phone Number</th>
-                <th>Date of Birth</th>
+                <th>Age</th>
                 <th>Position(s)</th>
                 <th>Skills</th>
                 <th>Contract Start</th>
@@ -60,7 +62,7 @@
                     <td>{{player.email}}</td>
                     <td>{{player.id_no}}</td>
                     <td>{{player.phone_number}}</td>
-                    <td>{{player.date_of_birth}}</td>
+                    <td>{{player.age}}</td>
                     {% for position in player.player_position.all %}
                         <td>{{position.position}}</td>
                     {% endfor %}
@@ -77,6 +79,7 @@
                     <td>{{player.coach}}</td>
                     <td>
                         <a href="{% url 'apps:update-player' player.id %}">Update Player</a>
+                        
                     </td>
                 </tr>
             {% empty %}

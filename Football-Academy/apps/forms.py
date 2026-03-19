@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django import forms
-from .models import Contract, Player
+from .models import Contract, Player, Coach
 
 class PlayerRegisterForm(ModelForm):
     username = forms.CharField()
@@ -27,3 +27,12 @@ class PlayerUpdateForm(ModelForm):
             'skills': forms.CheckboxSelectMultiple(),
             'player_position': forms.CheckboxSelectMultiple(),
         }
+
+class CoachUpdateForm(ModelForm):
+    class Meta:
+        model = Coach
+        fields = ['name', 'email', 'date_of_birth', 'phone_number']
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+
+        } 

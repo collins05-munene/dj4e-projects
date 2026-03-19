@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from .models import Player, Coach
 from django.contrib import messages
-from .forms import PlayerRegisterForm, PlayerUpdateForm
+from .forms import PlayerRegisterForm, PlayerUpdateForm, CoachUpdateForm
 from django.db import transaction
 
 # Create your views here.
@@ -86,11 +86,11 @@ class CreateCoach(View):
 
         if password != confirm_password:
             messages.error(request, "Passwords do not match")
-            return redirect("create-coach")
+            return redirect("apps:create-coach")
         
         if User.objects.filter(username=username).exists():
             messages.error(request, 'Username already exists')
-            return redirect("create-coach")
+            return redirect("apps:create-coach")
         
         user = User.objects.create_user(username=username,password=password)
 
@@ -99,7 +99,13 @@ class CreateCoach(View):
         messages.success(request, f"Coach {name} registered successfully")
 
 
-        return redirect("login")
+        return redirect("apps:login")
+
+class UpdateCoach(UpdateView):
+    model = Coach
+    form_class = CoachUpdateForm
+    template_name = 'apps/update-player.html'
+    success_url = reverse_lazy('apps:admin-page')
 
 class PlayerPage(View):
     def get(self, request):
