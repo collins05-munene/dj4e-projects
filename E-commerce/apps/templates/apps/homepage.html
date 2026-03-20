@@ -1,0 +1,14 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}
+    <title>Homepage</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Welcome to our e-shop</h1>
+    {% for item in items %}
+        <p><b>Name:</b> {{item.name}} | <b>Price:</b> {{item.selling_price}}shs |<b>Quantity:</b>  {{items.quantity}} | <b>Category:</b> {{item.category}} | <b>Profit:</b> {{item.profit}}shs</p>
+    {% empty %}
+        <p>Items will be updated in a few. Sorry for the inconviences caused.</p>
+    {% endfor %}
+{% endblock %}
