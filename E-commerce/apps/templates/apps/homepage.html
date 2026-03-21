@@ -6,8 +6,12 @@
 
 {% block content %}
     <h1>Welcome to our e-shop</h1>
+    <ul>
+        <li><a href="{% url 'register-client' %}">Create Account</a></li>
+        <li> <a href="{% url 'login' %}">Login</a> </li>
+    </ul>
     {% for item in items %}
-        <p><b>Name:</b> {{item.name}} | <b>Price:</b> {{item.selling_price}}shs |<b>Quantity:</b>  {{items.quantity}} | <b>Category:</b> {{item.category}} | <b>Profit:</b> {{item.profit}}shs</p>
+        <p><b>Name:</b> {{item.name}} | <b>Price:</b> {{item.selling_price}}shs |<b>Quantity:</b>  {{item.quantity}} | <b>Category:</b> {{item.category}} | <b>Profit:</b> {{item.profit}}shs</p>
     {% empty %}
         <p>Items will be updated in a few. Sorry for the inconviences caused.</p>
     {% endfor %}

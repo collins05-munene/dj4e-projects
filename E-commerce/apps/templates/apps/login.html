@@ -1,0 +1,14 @@
+{% extends 'apps/base.html' %}
+
+{% block title %} <title>Login Page</title> {% endblock %}
+
+{% block content %}
+    <h1>Login Page</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit">Login</button>
+    </form>
+    <a href="{% url 'register-client' %}">Create Account</a>
+    <a href="{% url 'homepage' %}">Go back</a>
+{% endblock %}

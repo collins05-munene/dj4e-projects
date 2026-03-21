@@ -1,0 +1,14 @@
+{% extends 'apps/base.html' %}
+
+{% block title %} <title>Delete Item Page</title>{% endblock %}
+
+{% block content %}
+    <h1>Delete Item Page</h1>
+    <p>Are you sure you want to delete, {{item.name}}? </p>
+    <form method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Delete">
+    </form>
+    <a href="{% url 'admin-page' %}">Go back</a>
+{% endblock %}
