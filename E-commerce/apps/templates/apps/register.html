@@ -1,0 +1,13 @@
+{% extends 'apps/base.html' %}
+
+{% block title %} Registration Page {% endblock %}
+
+{% block content %}
+    <h1>Welcome to the Registration Page</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Create Account">
+    </form>
+    <a href="{% url 'homepage' %}">Go back</a>
+{% endblock %}

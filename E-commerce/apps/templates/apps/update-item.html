@@ -1,0 +1,13 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}<title>Update Item Page</title>{% endblock %}
+
+{% block content %}
+    <h1>Update Item</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Update">
+    </form>
+    <a href="{% url 'admin-page' }">Go back</a>
+{% endblock %}

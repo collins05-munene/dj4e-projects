@@ -1,0 +1,49 @@
+{% extends "apps/base.html" %}
+
+{% block title %} <title>Admin Page</title> {% endblock %}
+
+{% block content %}
+    <h1>Admin Page <span style="color: red">{{request.user}}</span></h1>
+    <a href="{% url 'homepage' %}">Logout</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Age</th>
+                <th>ID number</th>
+                <th>Registration day</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+                <tr>
+                    <td>{{client.name}}</td>
+                    <td>{{client.phone_number}}</td>
+                    <td>{{client.age}}</td>
+                    <td>{{client.id_no}}</td>
+                    <td>{{client.created_at}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table>
+        <thead>
+            <tr>
+                <th>Item Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+                <tr>
+                    <td>{{item.name}}</td>
+                    <td>
+                        <a href="{% url 'update-item' item.id %}">Update</a>
+                        <a href="{% url 'delete-item' item.id %}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
