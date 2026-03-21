@@ -20,5 +20,11 @@ class ItemUpdateForm(ModelForm):
         model = Item
         fields = ['name', 'category', 'quantity', 'buying_price', 'selling_price']
         widgets  = {
-            'category': forms.CheckboxInput(),
+            'category': forms.CheckboxSelectMultiple()
         }
+
+class ItemCreationForm(ModelForm):
+    class Meta:
+        model = Item
+        fields = ['name', 'quantity', 'category', 'buying_price', 'selling_price']
+

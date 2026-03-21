@@ -4,7 +4,11 @@
 
 {% block content %}
     <h1>Admin Page <span style="color: red">{{request.user}}</span></h1>
-    <a href="{% url 'homepage' %}">Logout</a>
+    <ul>
+        <li><a href="{% url 'homepage' %}">Logout</a></li>
+        <li><a href="{% url 'create-item' %}">Add Stock</a></li>
+    </ul>
+    
     <table>
         <thead>
             <tr>

@@ -8,5 +8,6 @@ urlpatterns =[
     path('admin-page/', views.AdminPage.as_view(), name="admin-page"),
     path('client-page/', views.ClientPage.as_view(), name='client-page'),
     path('update-item/<int:pk>/', views.UpdateItem.as_view(), name='update-item'),
-    path('delete-item/<int:id>/', views.DeleteItem.as_view(), name='delete-item')
+    path('delete-item/<int:id>/', views.DeleteItem.as_view(), name='delete-item'),
+    path('create-item/', views.CreateItem.as_view(), name='create-item'),
 ]

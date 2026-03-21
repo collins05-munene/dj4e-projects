@@ -1,0 +1,13 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}<title>Create Item Page</title>{% endblock %}
+
+{% block content %}
+    <h1>Create Item Page</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Create">
+    </form>
+    <a href="{% url 'admin-page' %}">Go back</a>
+{% endblock %}

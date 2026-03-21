@@ -1,0 +1,9 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}<title>Authorization Page</title>{% endblock %}
+
+{% block content %}
+    <h1>Not Authorized Page</h1>
+    <p>Kindly leave this page before a laswuit befalls you.</p>
+    <a href="{% url 'homepage' %}">Homepage</a>
+{% endblock %}
