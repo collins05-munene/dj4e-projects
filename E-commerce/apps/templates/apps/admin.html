@@ -1,53 +1,222 @@
 {% extends "apps/base.html" %}
 
-{% block title %} <title>Admin Page</title> {% endblock %}
+{% block title %} <title>Admin Page</title><style>* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f4f6f9;
+}
+
+/* Navbar */
+.navbar {
+    background: #111;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user {
+    color: #00ffcc;
+}
+
+.logout {
+    color: red;
+    text-decoration: none;
+}
+
+/* Container */
+.container {
+    padding: 30px;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #2a5298;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background: #1e3c72;
+}
+
+/* Cards */
+.card {
+    background: white;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Tables */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background: #2a5298;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+/* Highlights */
+.highlight {
+    background: #fff3cd;
+}
+
+.profit {
+    background: rgba(0, 255, 0, 0.1);
+    font-weight: bold;
+}
+
+/* Actions */
+.edit {
+    color: blue;
+    margin-right: 10px;
+    text-decoration: none;
+}
+
+.delete {
+    color: red;
+    text-decoration: none;
+}
+.logout-btn {
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: bold;
+}</style> {% endblock %}
 
 {% block content %}
-    <h1>Admin Page <span style="color: red">{{request.user}}</span></h1>
-    <ul>
-        <li><a href="{% url 'homepage' %}">Logout</a></li>
-        <li><a href="{% url 'create-item' %}">Add Stock</a></li>
-    </ul>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Phone Number</th>
-                <th>Age</th>
-                <th>ID number</th>
-                <th>Registration day</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for client in clients %}
-                <tr>
-                    <td>{{client.name}}</td>
-                    <td>{{client.phone_number}}</td>
-                    <td>{{client.age}}</td>
-                    <td>{{client.id_no}}</td>
-                    <td>{{client.created_at}}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <table>
-        <thead>
-            <tr>
-                <th>Item Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
-                <tr>
-                    <td>{{item.name}}</td>
-                    <td>
-                        <a href="{% url 'update-item' item.id %}">Update</a>
-                        <a href="{% url 'delete-item' item.id %}">Delete</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <header class="navbar">
+    <h1>Admin Dashboard</h1>
+    <div class="nav-right">
+        <span class="user">{{ request.user }}</span>
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type='submit' class="logout-btn">Logout</button>
+        </form>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- Actions -->
+    <div class="actions">
+        <a href="{% url 'create-item' %}" class="btn">+ Add Stock</a>
+    </div>
+
+    <!-- Clients Section -->
+    <section class="card">
+        <h2>Clients</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Age</th>
+                        <th>ID</th>
+                        <th>Registered</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in clients %}
+                    <tr>
+                        <td>{{ client.name }}</td>
+                        <td>{{ client.phone_number }}</td>
+                        <td>{{ client.age }}</td>
+                        <td>{{ client.id_no }}</td>
+                        <td>{{ client.created_at }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No clients yet</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Items Section -->
+    <section class="card">
+        <h2>Inventory</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Original</th>
+                        <th>Discount</th>
+                        <th>Buying</th>
+                        <th>Current</th>
+                        <th>Profit</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>Ksh {{ item.selling_price }}</td>
+                        <td>{{ item.discount }}%</td>
+                        <td>Ksh {{ item.buying_price }}</td>
+                        <td class="highlight">Ksh {{ item.discounted_price }}</td>
+                        <td class="profit">
+                            {% if item.discount > 0 %}
+                                {{ item.discounted_profit }}
+                            {% else %}
+                                {{ item.profit }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'update-item' item.id %}" class="edit">Edit</a>
+                            <a href="{% url 'delete-item' item.id %}" class="delete">Delete</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">No items yet</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
 {% endblock %}

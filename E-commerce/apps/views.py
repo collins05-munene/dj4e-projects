@@ -50,7 +50,7 @@ class CustomRegistrationView(View):
 
             return redirect('login')
         context = {'form': form}
-        return render(request, 'apps/register-client.html', context)
+        return render(request, 'apps/register.html', context)
     
 class CustomLoginView(View):
     def get(self, request):

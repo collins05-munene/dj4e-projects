@@ -18,13 +18,17 @@ class ClientRegistrationForm(ModelForm):
 class ItemUpdateForm(ModelForm):
     class Meta:
         model = Item
-        fields = ['name', 'category', 'quantity', 'buying_price', 'selling_price']
-        widgets  = {
-            'category': forms.CheckboxSelectMultiple()
-        }
+        fields = ['name', 'category','action', 'quantity','discount', 'buying_price', 'selling_price']
+       
 
 class ItemCreationForm(ModelForm):
     class Meta:
         model = Item
-        fields = ['name', 'quantity', 'category', 'buying_price', 'selling_price']
-
+        fields = ['name', 'action', 'quantity','discount', 'category', 'buying_price', 'selling_price']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Enter item name'}),
+            'quantity': forms.NumberInput(attrs={'placeholder': 'Enter quantity'}),
+            'discount': forms.NumberInput(attrs={'placeholder': 'Enter discount %'}),
+            'buying_price': forms.NumberInput(attrs={'placeholder': 'Buying price'}),
+            'selling_price': forms.NumberInput(attrs={'placeholder': 'Selling price'}),
+        }

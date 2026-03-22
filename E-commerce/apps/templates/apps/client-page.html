@@ -1,7 +1,84 @@
 {% extends 'apps/base.html' %}
 
-{% block title %}Client Page{% endblock %}
+{% block title %}<title>Client Page</title><style>.client-container {
+    padding: 30px;
+}
 
-{% block content %} 
-    <h1>Client Page</h1>
+.client-header {
+    margin-bottom: 20px;
+}
+
+.subtitle {
+    color: gray;
+}
+
+/* Buttons */
+.client-actions {
+    margin-bottom: 25px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #2a5298;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.btn.secondary {
+    background: #555;
+}
+
+/* Cards */
+.client-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}</style>{% endblock %}
+
+{% block content %}
+
+<div class="client-container">
+
+    <div class="client-header">
+        <h1>Welcome, {{ request.user.username }}</h1>
+        <p class="subtitle">Browse and manage your shopping experience</p>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="client-actions">
+        <a href="{% url 'homepage' %}" class="btn">🛍 View Products</a>
+        <a href="#" class="btn secondary">🛒 My Cart</a>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="client-cards">
+
+        <div class="card">
+            <h3>My Orders</h3>
+            <p>You have no orders yet.</p>
+        </div>
+
+        <div class="card">
+            <h3>Saved Items</h3>
+            <p>No saved items yet.</p>
+        </div>
+
+        <div class="card">
+            <h3>Account Info</h3>
+            <p>Username: {{ request.user.username }}</p>
+        </div>
+
+    </div>
+
+</div>
 {% endblock %}

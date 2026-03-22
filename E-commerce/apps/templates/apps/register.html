@@ -1,13 +1,126 @@
 {% extends 'apps/base.html' %}
 
-{% block title %} Registration Page {% endblock %}
+{% block title %} <title>Registration Page</title>
+  <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Container */
+.auth-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+/* Card */
+.auth-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.auth-card h1 {
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: gray;
+    margin-bottom: 20px;
+}
+
+/* Form */
+.form-group {
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* Button */
+.btn {
+    width: 100%;
+    padding: 12px;
+    background: #2a5298;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background: #1e3c72;
+}
+
+/* Links */
+.auth-links {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.auth-links a {
+    font-size: 14px;
+    text-decoration: none;
+    color: #2a5298;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+/* Error messages */
+.errorlist {
+    color: red;
+    font-size: 13px;
+    margin-top: 5px;
+    list-style: none;
+}
+    </style>
+{% endblock %}
 
 {% block content %}
-    <h1>Welcome to the Registration Page</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{form.as_p}}
-        <input type="submit" value="Create Account">
-    </form>
-    <a href="{% url 'homepage' %}">Go back</a>
+ <div class="auth-container">
+
+    <div class="auth-card">
+        <h1>Create Account</h1>
+        <p class="subtitle">Join us and start shopping</p>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                {{form.as_p}}
+            </div>
+
+           
+            <button type="submit" class="btn">Create Account</button>
+        </form>
+
+        <div class="auth-links">
+            <a href="{% url 'login' %}">Already have an account?</a>
+            <a href="{% url 'homepage' %}">Back to Home</a>
+        </div>
+    </div>
+
+</div>
 {% endblock %}
