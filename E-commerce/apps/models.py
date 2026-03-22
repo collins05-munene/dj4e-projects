@@ -17,12 +17,19 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+class Action(models.Model):
+    name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
     
 class Item(models.Model):
     name = models.CharField(max_length=30)
-    
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    quantity = models.DecimalField(max_digits=10, decimal_places=2)
+    action = models.ForeignKey(Action, on_delete=models.SET_NULL, null=True)
+    quantity = models.IntegerField(null=True)
+    discount = models.DecimalField(default=0,max_digits=10, decimal_places=2, null=True)
     buying_price = models.DecimalField(max_digits=10, decimal_places=2)
     selling_price = models.DecimalField(max_digits=10, decimal_places=2)
     updated_at = models.DateTimeField(auto_now=True)
@@ -32,7 +39,16 @@ class Item(models.Model):
     def profit(self):
         profit = self.selling_price - self.buying_price
         return profit
-
+    @property
+    def discounted_price(self):
+        discounted_price = self.selling_price - ((self.discount / 100) * self.selling_price)
+        
+        return int(discounted_price)
+    @property
+    def discounted_profit(self):
+        discounted_profit = self.discounted_price - self.buying_price
+        return int(discounted_profit)
+    
     def __str__(self):
         return self.name
     

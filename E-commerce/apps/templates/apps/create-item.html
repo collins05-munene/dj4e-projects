@@ -1,13 +1,145 @@
 {% extends 'apps/base.html' %}
 
-{% block title %}<title>Create Item Page</title>{% endblock %}
+{% block title %}<title>Create Item Page</title><style>
+body {
+    background: #f4f6f9;
+    font-family: Arial, sans-serif;
+}
 
-{% block content %}
-    <h1>Create Item Page</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{form.as_p}}
-        <input type="submit" value="Create">
-    </form>
-    <a href="{% url 'admin-page' %}">Go back</a>
+/* Container */
+.form-container {
+    background: linear-gradient(135deg, #141e30, #243b55);
+     height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+/* Card */
+.form-card {
+    width: 100%;
+    max-width: 600px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.subtitle {
+    color: gray;
+    margin-bottom: 20px;
+}
+
+/* Groups */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* Inputs */
+input, select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+/* Button */
+.btn {
+    width: 100%;
+    padding: 12px;
+    background: #2a5298;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #1e3c72;
+}
+
+/* Errors */
+.errorlist {
+    color: red;
+    font-size: 13px;
+    list-style: none;
+}
+
+/* Back */
+.back-link {
+    display: inline-block;
+    margin-top: 15px;
+    text-decoration: none;
+    color: #2a5298;
+}</style>{% endblock %}
+
+{% block content %}<div class="form-container">
+
+    <div class="form-card">
+        <h1>Create Item</h1>
+        <p class="subtitle">Add a new product to your store</p>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+                {{ form.name.errors }}
+            </div>
+
+            <div class="form-group">
+                {{ form.category.label_tag }}
+                {{ form.category }}
+                {{ form.category.errors }}
+            </div>
+
+            <div class="form-group">
+                {{ form.action.label_tag }}
+                {{ form.action }}
+                {{ form.action.errors }}
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.quantity.label_tag }}
+                    {{ form.quantity }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.discount.label_tag }}
+                    {{ form.discount }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.buying_price.label_tag }}
+                    {{ form.buying_price }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.selling_price.label_tag }}
+                    {{ form.selling_price }}
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Create Item</button>
+
+        </form>
+
+        <a href="{% url 'admin-page' %}" class="back-link">← Back</a>
+    </div>
+
+</div>
 {% endblock %}
