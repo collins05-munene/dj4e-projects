@@ -1,27 +1,44 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic.edit import UpdateView
-from django.views.generic import DeleteView
-from .models import Item, Client, Admin
+from django.views.generic import DeleteView, ListView
+from .models import Item, Category, Cart, CartItem, Client, Admin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
-from .forms import ClientRegistrationForm, ItemUpdateForm, ItemCreationForm
+from .forms import ClientRegistrationForm, ItemUpdateForm, ItemCreationForm, CategoryCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from django.urls import reverse_lazy
+from django.db.models import Q
 
 # Create your views here.
 class Homepage(View):
     def get(self, request):
         items = Item.objects.all()
-        context = {'items': items}
+        
+        search_query = request.GET.get('search')
+        if search_query:
+            items = items.filter(
+                Q(name__icontains=search_query)
+                )
+        category_filter = request.GET.get('category')
+        if category_filter:
+            items = items.filter(category_id=category_filter)
+
+        context = {
+            'items': items,
+            'categories': Category.objects.all(),
+            }
         return render(request, 'apps/homepage.html', context)
     
 class CustomRegistrationView(View):
     def get(self, request):
         form = ClientRegistrationForm()
-        context = {'form': form}
+        context = {
+            'form': form,
+          
+            }
         return render(request, 'apps/register.html', context)
     
     def post(self, request):
@@ -137,4 +154,93 @@ class CreateItem(LoginRequiredMixin, UserPassesTestMixin, View):
         
         context = {'form': form}
         return render(request, 'apps/create-item.html', context)
+    
+class CreateCategory(LoginRequiredMixin, UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_staff
+    def handle_no_permission(self):
+        return render(self.request, 'apps/not-authorized.html')
+    def get(self, request):
+        form = CategoryCreationForm()
+        context = {'form': form}
+        return render(request, 'apps/create-category.html', context)
+    def post(self, request):
+        form = CategoryCreationForm(request.POST)
 
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Successfully created new category")
+            return redirect('admin-page')
+
+        context = {'form': form}
+        return render(request, 'apps/create-category.html', context)
+
+class UpdateCategory(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    def test_func(self):
+        return self.request.user.is_staff
+    def handle_no_permission(self):
+        return render(self.request, 'apps/not-authorized.html')
+    
+    model = Category
+    form_class = CategoryCreationForm
+    template_name = 'apps/create-category.html'
+    success_url = reverse_lazy('admin-page')
+
+class AddToCartView(View):
+    def post(self, request, item_id):
+        if not request.user.is_authenticated:
+            return redirect("login")
+
+        item = get_object_or_404(Item, id=item_id)
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        cart_item, created = CartItem.objects.get_or_create(
+            cart=cart, item=item
+            )
+        
+        if not created:
+            cart_item.quantity += 1
+
+        cart_item.save()
+        return redirect('cart-page')
+    
+class CartView(ListView):
+    model = CartItem
+    template_name = 'apps/cart.html'
+
+    def get_queryset(self):
+        cart = Cart.objects.get(user=self.request.user)
+        return CartItem.objects.filter(cart=cart)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cart = Cart.objects.get(user=self.request.user)
+        items = CartItem.objects.filter(cart=cart)
+
+        total = sum(item.item.discounted_price * item.quantity for item in items)
+        context['total'] = total
+        return context
+    
+class DeleteCartView(DeleteView):
+    model=CartItem
+    success_url = reverse_lazy('cart-page')
+    template_name = 'apps/confirm_delete.html'
+
+    def get_queryset(self):
+        return CartItem.objects.filter(cart__user=self.request.user)
+    
+class UpdateCartItem(View):
+    def post(self, request, pk):
+        action = request.POST.get('action')
+        item = get_object_or_404(
+            CartItem, id=pk, cart__user=request.user
+        )
+        if action == 'increase':
+            item.quantity += 1
+            item.save()
+        elif action == 'decrease':
+            if item.quantity > 1:
+                item.quantity -= 1
+                item.save()
+            else:
+                item.delete()
+        return redirect('cart-page')

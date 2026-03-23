@@ -108,11 +108,24 @@ body {
     <nav>
         <a href="{% url 'register-client' %}">Create Account</a>
         <a href="{% url 'login' %}">Login</a>
+        
     </nav>
 </header>
 
 <main class="container">
-
+    <form method="GET">
+        <input type="text" name="search" placeholder="Search Products">
+        <input type="submit" value="Search">
+        <select name="category">
+            <option value="">All Category</option>
+            {% for category in categories %}
+                <option value="{{category.id}}">{{category.name}}</option>
+            {% endfor %}
+        </select>
+       <input type="submit" value="Filter">
+        <button><a href="{% url 'homepage' %}">Refresh</a></button>
+    </form>
+   
     <!-- Flash Sale -->
     <section class="section flash">
         <h2> Flash Sale</h2>
@@ -125,6 +138,10 @@ body {
                 <p class="price">Ksh {{ item.discounted_price }}</p>
                 <p>Stock: {{ item.quantity }}</p>
                 <p class="category">{{ item.category }}</p>
+                <form method="POST" action="{% url 'add-to-cart' item.id %}">
+                    {% csrf_token %}
+                    <button type="submit"> Add to Cart</button>
+                </form>
             </div>
             {% endif %}
         {% empty %}
@@ -144,6 +161,10 @@ body {
                 <p class="price">Ksh {{ item.selling_price }}</p>
                 <p>Stock: {{ item.quantity }}</p>
                 <p class="category">{{ item.category }}</p>
+                <form method="POST" action="{% url 'add-to-cart' item.id %}">
+                    {% csrf_token %}
+                    <button type="submit"> Add to Cart</button>
+                </form>
             </div>
             {% endif %}
         {% empty %}
@@ -164,6 +185,10 @@ body {
                 <p class="price">Ksh {{ item.discounted_price }}</p>
                 <p>Stock: {{ item.quantity }}</p>
                 <p class="category">{{ item.category }}</p>
+                <form method="POST" action="{% url 'add-to-cart' item.id %}">
+                    {% csrf_token %}
+                    <button type="submit"> Add to Cart</button>
+                </form>
             </div>
             {% endif %}
         {% empty %}
@@ -174,7 +199,7 @@ body {
 
     <!-- Other Products -->
     <section class="section">
-        <h2> Other Products</h2>
+        <h2> Non Discounted</h2>
         <div class="products">
         {% for item in items %}
             {% if item.discount == 0 %}
@@ -183,6 +208,10 @@ body {
                 <p class="price">Ksh {{ item.selling_price }}</p>
                 <p>Stock: {{ item.quantity }}</p>
                 <p class="category">{{ item.category }}</p>
+                <form method="POST" action="{% url 'add-to-cart' item.id %}">
+                    {% csrf_token %}
+                    <button type="submit"> Add to Cart</button>
+                </form>
             </div>
             {% endif %}
         {% empty %}

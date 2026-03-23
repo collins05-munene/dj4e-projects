@@ -12,6 +12,11 @@ phone_number_validator = RegexValidator(
     regex = r"^07\d{8}$",
     message = "Incorrect Number format"
 )
+class Cart(models.Model):
+    user  = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+
 class Category(models.Model):
     name = models.CharField(max_length=30)
 
@@ -27,7 +32,7 @@ class Action(models.Model):
 class Item(models.Model):
     name = models.CharField(max_length=30)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    action = models.ForeignKey(Action, on_delete=models.SET_NULL, null=True)
+    action = models.ForeignKey(Action, on_delete=models.SET_NULL, null=True, blank=True)
     quantity = models.IntegerField(null=True)
     discount = models.DecimalField(default=0,max_digits=10, decimal_places=2, null=True)
     buying_price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -89,3 +94,12 @@ class Client(models.Model):
     
     def __str__(self):
         return self.name
+    
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+
+    def get_total(self):
+        get_total = self.quantity * self.item.discounted_price
+        return get_total

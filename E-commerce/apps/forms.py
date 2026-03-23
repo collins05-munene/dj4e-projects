@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Admin, Client, Item
+from .models import Admin, Category, Client, Item
 from django import forms
 
 class ClientRegistrationForm(ModelForm):
@@ -32,3 +32,17 @@ class ItemCreationForm(ModelForm):
             'buying_price': forms.NumberInput(attrs={'placeholder': 'Buying price'}),
             'selling_price': forms.NumberInput(attrs={'placeholder': 'Selling price'}),
         }
+class CategoryCreationForm(ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Create new category'})
+        }
+
+class CategoryUpdateForm(ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
+        
+

@@ -78,8 +78,11 @@ table {
 th, td {
     padding: 12px;
     text-align: left;
-}
 
+}
+th, td:hover{
+    background-color: gray;
+}
 th {
     background: #2a5298;
     color: white;
@@ -135,7 +138,8 @@ tr:nth-child(even) {
 
     <!-- Actions -->
     <div class="actions">
-        <a href="{% url 'create-item' %}" class="btn">+ Add Stock</a>
+        <a href="{% url 'create-item' %}" class="btn">Add Stock</a>
+        <a href="{% url 'create-category' %}" class="btn">Create New Category</a>
     </div>
 
     <!-- Clients Section -->
@@ -178,9 +182,12 @@ tr:nth-child(even) {
             <table>
                 <thead>
                     <tr>
+                        <th>Count</th>
                         <th>Name</th>
-                        <th>Original</th>
+                        <th>Price Before</th>
+                        <th>Category</th>
                         <th>Discount</th>
+                        <th>Status</th>
                         <th>Buying</th>
                         <th>Current</th>
                         <th>Profit</th>
@@ -190,9 +197,12 @@ tr:nth-child(even) {
                 <tbody>
                     {% for item in items %}
                     <tr>
+                        <td>{{item.id}}</td>
                         <td>{{ item.name }}</td>
                         <td>Ksh {{ item.selling_price }}</td>
+                        <td>{{item.category.name}}</td>
                         <td>{{ item.discount }}%</td>
+                        <td>{{item.action.name}}</td>
                         <td>Ksh {{ item.buying_price }}</td>
                         <td class="highlight">Ksh {{ item.discounted_price }}</td>
                         <td class="profit">
