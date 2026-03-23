@@ -11,5 +11,7 @@ urlpatterns =[
     path('update-item/<int:pk>/', views.UpdateItem.as_view(), name='update-item'),
     path('delete-item/<int:id>/', views.DeleteItem.as_view(), name='delete-item'),
     path('create-item/', views.CreateItem.as_view(), name='create-item'),
-    path('logout/', LogoutView.as_view(next_page='homepage'), name='logout')
+    path('logout/', LogoutView.as_view(next_page='homepage'), name='logout'),
+    path('create-category/',views.CreateCategory.as_view(), name='create-category'),
+    path('update-category/<int:pk>/', views.UpdateCategory.as_view(), name='update-category')
 ]

@@ -27,7 +27,7 @@ class Action(models.Model):
 class Item(models.Model):
     name = models.CharField(max_length=30)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    action = models.ForeignKey(Action, on_delete=models.SET_NULL, null=True)
+    action = models.ForeignKey(Action, on_delete=models.SET_NULL, null=True, blank=True)
     quantity = models.IntegerField(null=True)
     discount = models.DecimalField(default=0,max_digits=10, decimal_places=2, null=True)
     buying_price = models.DecimalField(max_digits=10, decimal_places=2)

@@ -2,26 +2,43 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic.edit import UpdateView
 from django.views.generic import DeleteView
-from .models import Item, Client, Admin
+from .models import Item, Category, Client, Admin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
-from .forms import ClientRegistrationForm, ItemUpdateForm, ItemCreationForm
+from .forms import ClientRegistrationForm, ItemUpdateForm, ItemCreationForm, CategoryCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from django.urls import reverse_lazy
+from django.db.models import Q
 
 # Create your views here.
 class Homepage(View):
     def get(self, request):
         items = Item.objects.all()
-        context = {'items': items}
+        
+        search_query = request.GET.get('search')
+        if search_query:
+            items = items.filter(
+                Q(name__icontains=search_query)
+                )
+        category_filter = request.GET.get('category')
+        if category_filter:
+            items = items.filter(category_id=category_filter)
+
+        context = {
+            'items': items,
+            'categories': Category.objects.all(),
+            }
         return render(request, 'apps/homepage.html', context)
     
 class CustomRegistrationView(View):
     def get(self, request):
         form = ClientRegistrationForm()
-        context = {'form': form}
+        context = {
+            'form': form,
+          
+            }
         return render(request, 'apps/register.html', context)
     
     def post(self, request):
@@ -137,4 +154,34 @@ class CreateItem(LoginRequiredMixin, UserPassesTestMixin, View):
         
         context = {'form': form}
         return render(request, 'apps/create-item.html', context)
+    
+class CreateCategory(LoginRequiredMixin, UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_staff
+    def handle_no_permission(self):
+        return render(self.request, 'apps/not-authorized.html')
+    def get(self, request):
+        form = CategoryCreationForm()
+        context = {'form': form}
+        return render(request, 'apps/create-category.html', context)
+    def post(self, request):
+        form = CategoryCreationForm(request.POST)
 
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Successfully created new category")
+            return redirect('admin-page')
+
+        context = {'form': form}
+        return render(request, 'apps/create-category.html', context)
+
+class UpdateCategory(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    def test_func(self):
+        return self.request.user.is_staff
+    def handle_no_permission(self):
+        return render(self.request, 'apps/not-authorized.html')
+    
+    model = Category
+    form_class = CategoryCreationForm
+    template_name = 'apps/create-category.html'
+    success_url = reverse_lazy('admin-page')

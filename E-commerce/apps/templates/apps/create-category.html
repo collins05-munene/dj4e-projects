@@ -1,0 +1,12 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}<title>Create Category Page</title>{% endblock %}
+
+{% block content %}
+    <h1>Create New Category</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Create">
+    </form>
+{% endblock %}
