@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic.edit import UpdateView
-from django.views.generic import DeleteView
-from .models import Item, Category, Client, Admin
+from django.views.generic import DeleteView, ListView
+from .models import Item, Category, Cart, CartItem, Client, Admin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from .forms import ClientRegistrationForm, ItemUpdateForm, ItemCreationForm, CategoryCreationForm
@@ -185,3 +185,62 @@ class UpdateCategory(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = CategoryCreationForm
     template_name = 'apps/create-category.html'
     success_url = reverse_lazy('admin-page')
+
+class AddToCartView(View):
+    def post(self, request, item_id):
+        if not request.user.is_authenticated:
+            return redirect("login")
+
+        item = get_object_or_404(Item, id=item_id)
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        cart_item, created = CartItem.objects.get_or_create(
+            cart=cart, item=item
+            )
+        
+        if not created:
+            cart_item.quantity += 1
+
+        cart_item.save()
+        return redirect('cart-page')
+    
+class CartView(ListView):
+    model = CartItem
+    template_name = 'apps/cart.html'
+
+    def get_queryset(self):
+        cart = Cart.objects.get(user=self.request.user)
+        return CartItem.objects.filter(cart=cart)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cart = Cart.objects.get(user=self.request.user)
+        items = CartItem.objects.filter(cart=cart)
+
+        total = sum(item.item.discounted_price * item.quantity for item in items)
+        context['total'] = total
+        return context
+    
+class DeleteCartView(DeleteView):
+    model=CartItem
+    success_url = reverse_lazy('cart-page')
+    template_name = 'apps/confirm_delete.html'
+
+    def get_queryset(self):
+        return CartItem.objects.filter(cart__user=self.request.user)
+    
+class UpdateCartItem(View):
+    def post(self, request, pk):
+        action = request.POST.get('action')
+        item = get_object_or_404(
+            CartItem, id=pk, cart__user=request.user
+        )
+        if action == 'increase':
+            item.quantity += 1
+            item.save()
+        elif action == 'decrease':
+            if item.quantity > 1:
+                item.quantity -= 1
+                item.save()
+            else:
+                item.delete()
+        return redirect('cart-page')

@@ -1,0 +1,16 @@
+{% extends 'apps/base.html' %}
+
+{% block content %}
+<div style="text-align:center; margin-top:50px;">
+    <h2>Are you sure you want to remove this item?</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" style="background:red; color:white; padding:10px;">
+            Yes, Remove
+        </button>
+    </form>
+
+    <a href="{% url 'cart-page' %}">Cancel</a>
+</div>
+{% endblock %}

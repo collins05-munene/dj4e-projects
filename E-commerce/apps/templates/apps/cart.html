@@ -1,0 +1,137 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}<title>Cart Page</title>
+<style>
+    .cart-container {
+    width: 80%;
+    margin: 40px auto;
+    font-family: Arial, sans-serif;
+}
+
+.cart-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cart-table th,
+.cart-table td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart-table th {
+    background-color: #f5f5f5;
+}
+
+.cart-summary {
+    margin-top: 30px;
+    text-align: right;
+}
+
+.checkout-btn {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.checkout-btn:hover {
+    background-color: #218838;
+}
+
+.remove-btn {
+    color: red;
+    text-decoration: none;
+}
+
+.remove-btn:hover {
+    text-decoration: underline;
+}
+
+.shop-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+}
+.qty-btn {
+    padding: 5px 10px;
+    margin: 0 5px;
+    background-color: #ddd;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.qty-btn:hover {
+    background-color: #bbb;
+}
+
+.quantity {
+    font-size: 16px;
+    font-weight: bold;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="cart-container">
+        <h1>Cart Page</h1>
+        {% if object_list %}
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in object_list %}
+                    <tr>
+                        <td>{{item.item.name}}</td>
+                        <td>KES {{item.item.discounted_price}}</td>
+                        <td>
+                            <form method="POST" action="{% url 'update-cart' item.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="decrease">
+                                <button type="submit" class="qty-btn">-</button>
+                            </form>
+                            <span class="quantity">{{item.quantity}}</span>
+                            <form method="POST" action="{% url 'update-cart' item.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="increase">
+                                <button type="submit" class="qty-btn">+</button>
+                            </form>
+                        </td>
+                        <td>{{item.get_total}}</td>
+                        <td>
+                            <a href="{% url 'remove-item' item.id %}" class="remove-btn">Remove </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="cart-summary">
+                <h2>Total: KES {{total}}</h2>
+                <a href="" class="checkout-btn">checkout</a>
+                <a href="{% url 'client-page' %}" class="shop-btn">Continue Shopping</a>
+            </div>
+        {% else %}
+            <p>Your cart is empty.</p>
+            <a href="{% url 'client-page' %}" class="shop-btn">Start Shopping</a>
+        {% endif %}
+    </div>
+{% endblock %}

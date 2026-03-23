@@ -138,6 +138,10 @@ body {
                 <p class="price">Ksh {{ item.discounted_price }}</p>
                 <p>Stock: {{ item.quantity }}</p>
                 <p class="category">{{ item.category }}</p>
+                <form method="POST" action="{% url 'add-to-cart' item.id %}">
+                    {% csrf_token %}
+                    <button type="submit"> Add to Cart</button>
+                </form>
             </div>
             {% endif %}
         {% empty %}
@@ -157,6 +161,10 @@ body {
                 <p class="price">Ksh {{ item.selling_price }}</p>
                 <p>Stock: {{ item.quantity }}</p>
                 <p class="category">{{ item.category }}</p>
+                <form method="POST" action="{% url 'add-to-cart' item.id %}">
+                    {% csrf_token %}
+                    <button type="submit"> Add to Cart</button>
+                </form>
             </div>
             {% endif %}
         {% empty %}
@@ -177,6 +185,10 @@ body {
                 <p class="price">Ksh {{ item.discounted_price }}</p>
                 <p>Stock: {{ item.quantity }}</p>
                 <p class="category">{{ item.category }}</p>
+                <form method="POST" action="{% url 'add-to-cart' item.id %}">
+                    {% csrf_token %}
+                    <button type="submit"> Add to Cart</button>
+                </form>
             </div>
             {% endif %}
         {% empty %}
@@ -196,6 +208,10 @@ body {
                 <p class="price">Ksh {{ item.selling_price }}</p>
                 <p>Stock: {{ item.quantity }}</p>
                 <p class="category">{{ item.category }}</p>
+                <form method="POST" action="{% url 'add-to-cart' item.id %}">
+                    {% csrf_token %}
+                    <button type="submit"> Add to Cart</button>
+                </form>
             </div>
             {% endif %}
         {% empty %}
