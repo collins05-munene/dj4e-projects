@@ -4,7 +4,9 @@ from .forms import UserRegistrationForm
 from django.contrib import messages
 from .models import Client
 from django.contrib.auth.models import User
-
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 class Homepage(View):
@@ -46,3 +48,32 @@ class CustomRegistrationView(View):
             'form': form
         }
         return render(request, 'apps/create-user.html', context)
+    
+
+class CustomLoginView(View):
+    def get(self, request):
+        form = AuthenticationForm()
+        context = {
+            'form': form
+        }
+        return render(request, 'apps/login.html', context)
+    
+    def post(self, request):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username,password=password)
+
+        if user is not None:
+            login(request, user)
+            if user.is_active:
+                return redirect('client-page')
+        else:
+            context = {
+                'error': 'Invalid Credentials'
+            }
+            return render(request, 'apps/login.html', context)
+
+class ClientPage(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, 'apps/client-page.html')
