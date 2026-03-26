@@ -1,0 +1,83 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}
+    <title>Checkout Page</title>
+    <style>
+        .checkout-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.checkout-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.order-summary {
+    margin-bottom: 20px;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    background: green;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: darkgreen;
+}
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="checkout-container">
+        <h2>Checkout</h2>
+        <div class="order-summary">
+            <h3>Order Summary</h3>
+            {% for item in cart_cart_items %}
+                <div class="item">
+                    <p>{{item.product.name}} (x {{item.quantity}})</p>
+                    <span>KES {{item.total_price}}</span>
+                </div>
+            {% endfor %}
+                <hr>
+                <h3>Total: KES {{total}}</h3>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{message}}</p>
+            {% endfor %}
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <label>Phone Numebr (m-pesa)</label>
+            <input type="text" name="phone" pkaceholder="e.g 0712345678" required>
+
+            <button type="submit" onclick="this.disabled=true; this.innerText='Processing...'; this.form.submit() ">Pay Now</button>
+        </form>
+    </div>
+{% endblock %}

@@ -126,7 +126,7 @@
             </table>
             <div class="cart-summary">
                 <h2>Total: KES {{total}}</h2>
-                <a href="" class="checkout-btn">checkout</a>
+                <a href="{% url 'checkout' %}" class="checkout-btn">checkout</a>
                 <a href="{% url 'client-page' %}" class="shop-btn">Continue Shopping</a>
             </div>
         {% else %}

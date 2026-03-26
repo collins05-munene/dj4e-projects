@@ -12,4 +12,5 @@ urlpatterns = [
     path('player-page/<int:pk>', views.PlayerPage.as_view(), name='player-page'),
     path('update/<int:pk>/', views.UpdatePlayer.as_view(), name='update-player'),
     path('update-coach/<int:pk>/', views.UpdateCoach.as_view(), name='update-coach'),
+    path('delete-player/<int:id>/', views.DeletePlayer.as_view(), name='delete-player')
 ]
