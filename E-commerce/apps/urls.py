@@ -17,5 +17,6 @@ urlpatterns =[
     path('add-to-cart/<int:item_id>/', views.AddToCartView.as_view(), name='add-to-cart'),
     path('cart-page/', views.CartView.as_view(), name='cart-page'),
     path('remove-item/<int:pk>/', views.DeleteCartView.as_view(), name='remove-item'),
-    path('update-items/<int:pk>/', views.UpdateCartItem.as_view(), name='update-cart')
+    path('update-items/<int:pk>/', views.UpdateCartItem.as_view(), name='update-cart'),
+    path('checkout/', views.CheckoutView.as_view(), name='checkout')
 ]

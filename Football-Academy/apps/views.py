@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.views.generic.edit import UpdateView
 from django.views.generic.detail import DetailView
+from django.views.generic import DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import AuthenticationForm
@@ -28,11 +29,11 @@ class CustomLoginView(View):
         if user is not None:
             login(request, user)
             if user.is_staff:
-                return redirect("admin-page")
+                return redirect("apps:admin-page")
             elif hasattr(user, 'player'):
-                return redirect('player-page', pk=user.player.pk)
+                return redirect('apps:player-page', pk=user.player.pk)
             elif hasattr(user, 'coach'):
-                return redirect("coach-page")
+                return redirect("apps:coach-page")
            
         else:
             context = {
@@ -158,4 +159,11 @@ class UpdatePlayer(UpdateView):
     form_class = PlayerUpdateForm
     template_name = 'apps/update-player.html'
     success_url = reverse_lazy('apps:admin-page')
+   
+
+class DeletePlayer(DeleteView):
+    model = Player
+    template_name = 'apps/delete.html'
+    success_url = reverse_lazy('apps:admin-page')
+    pk_url_kwarg ="id"
 

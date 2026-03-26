@@ -53,6 +53,7 @@
                     <th>Club From</th>
                     <th>Coach</th>
                     <th>Actions</th>
+                    <th>Delete</th>
                 </tr>  
             </thead>
 
@@ -86,7 +87,9 @@
                         <td>
                             <a class="btn-update" href="{% url 'apps:update-player' player.id %}">Update Player</a> 
                             <a class="btn-update" href="{% url 'apps:player-page' player.id %}">View Player</a>
+
                         </td>
+                        <td><a href="{% url 'apps:delete-player' player.id%}">Delete</a></td>
                     </tr>
                 {% empty %}
                     <tr>

@@ -5,7 +5,7 @@
 {% block content %}
     <h1>Login Page</h1>
     <ul>
-        <li><a href="{% url 'homepage' %}">Go back</a></li>
+        <li><a href="{% url 'apps:homepage' %}">Go back</a></li>
     </ul>
     <form method="POST">
         {% csrf_token %}
