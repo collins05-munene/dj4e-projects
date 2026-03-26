@@ -1,0 +1,20 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}
+    <title>Login Page</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Login</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Login">
+    </form>
+    <p>Don't have an account? <a href="{% url 'create-user' %}">Create Account</a></p>
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{message}}</p>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
