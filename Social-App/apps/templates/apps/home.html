@@ -6,4 +6,8 @@
 
 {% block content %}
     <h1>HomePage</h1>
+    <ul>
+        <li><a href="{% url 'create-user' %}">Create Account</a></li>
+        <li><a href="{% url 'login' %}">Login</a></li>
+    </ul>
 {% endblock %}

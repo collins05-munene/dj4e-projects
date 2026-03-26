@@ -1,0 +1,12 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}
+    <title>Client Page</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Welcome, {{request.user.username}}</h1>
+    <ul>
+        <li><a href="{% url 'delete-account' %}">Delete Account</a> </li>
+    </ul>
+{% endblock %}
