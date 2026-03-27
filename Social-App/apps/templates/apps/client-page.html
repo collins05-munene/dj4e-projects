@@ -13,6 +13,12 @@
         <li>
            <a href="{% url 'update-client' %}">Update Account</a> 
         </li>
+        <li>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        </li>
     </ul>
         {% if messages %}
         {% for message in messages %}
