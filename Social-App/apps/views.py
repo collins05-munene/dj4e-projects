@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render
 from django.views import View
-from .forms import UserRegistrationForm, ClientUpdateForm, UserUpdateForm
+from .forms import UserRegistrationForm, ClientUpdateForm, UserUpdateForm, PostForm
 from django.contrib import messages
-from .models import Client
+from .models import Client, Post
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
@@ -20,7 +20,8 @@ User = get_user_model()
 
 class Homepage(View):
     def get(self, request):
-        return render(request, 'apps/home.html')
+        context = {}
+        return render(request, 'apps/home.html', context)
     
 class CustomRegistrationView(View):
     def get(self, request):
@@ -85,7 +86,9 @@ class CustomLoginView(View):
 
 class ClientPage(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request, 'apps/client-page.html')
+        posts = Post.objects.all()
+        context = {'posts': posts}
+        return render(request, 'apps/client-page.html', context)
     
 class ClientDeleteView(LoginRequiredMixin, DeleteView):
     model = User
@@ -144,3 +147,23 @@ class CustomLogoutView(View):
     def post(self, request):
         logout(request)
         return redirect('login')
+
+class PostCreateView(LoginRequiredMixin, View):
+    template_name = 'apps/create-post.html'
+
+    def get(self, request):
+        form = PostForm()
+        context = {'form': form}
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            messages.success(request, 'Post created successfully')
+            return redirect('client-page')
+        context = {'form': form}
+        return render(request, self.template_name, context)
+    

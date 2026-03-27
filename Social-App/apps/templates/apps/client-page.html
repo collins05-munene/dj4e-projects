@@ -20,7 +20,18 @@
             </form>
         </li>
     </ul>
-        {% if messages %}
+    <h1>Posts</h1>
+    <a href="{% url 'create-post' %}">Create post</a>
+    {% for post in posts %}
+        <div style="border:1px solid #111; padding: 10px; margin-bottom: 10px">
+            <h2 style="font-family: 'poppins', sans-serif">{{post.title}}</h2>
+            <p style="font-family: 'Roboto', sans-serif">{{post.content}}</p>
+            <small style="font-family: 'Caveat', cursive; font-size: 0.75em; color: #333; padding-left: 2em;">. By <b>{{post.author.username}}</b> on <b>{{post.created_at}}</b></small>
+        </div>
+    {% empty %}
+        <p>No posts yet.</p>
+    {% endfor %}
+    {% if messages %}
         {% for message in messages %}
             <p>{{message}}</p>
         {% endfor %}
