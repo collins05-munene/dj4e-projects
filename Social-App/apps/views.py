@@ -5,7 +5,7 @@ from django.contrib import messages
 from .models import Client
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import DeleteView
 from django.urls import reverse_lazy
@@ -139,3 +139,8 @@ class ClientUpdateView(LoginRequiredMixin, View):
             'password_form': password_form
             }
         return render(request, self.template_name, context)
+    
+class CustomLogoutView(View):
+    def post(self, request):
+        logout(request)
+        return redirect('login')
