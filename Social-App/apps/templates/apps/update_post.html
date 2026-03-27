@@ -1,0 +1,21 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}
+    <title>Update Post</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Edit Post</h1>
+    <form method="post">
+        {% csrf_token %}
+        <p>
+            {{form.title.label_tag}}
+            {{form.title}}
+        </p>
+        <p>
+            {{form.content.label_tag}}
+            {{form.content}}
+        </p>
+        <button type="submit">Update</button>
+    </form>
+{% endblock %}

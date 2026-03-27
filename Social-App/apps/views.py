@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from .forms import UserRegistrationForm, ClientUpdateForm, UserUpdateForm, PostForm
 from django.contrib import messages
@@ -86,7 +86,7 @@ class CustomLoginView(View):
 
 class ClientPage(LoginRequiredMixin, View):
     def get(self, request):
-        posts = Post.objects.all()
+        posts = Post.objects.all().order_by('-updated_at')
         context = {'posts': posts}
         return render(request, 'apps/client-page.html', context)
     
@@ -166,4 +166,57 @@ class PostCreateView(LoginRequiredMixin, View):
             return redirect('client-page')
         context = {'form': form}
         return render(request, self.template_name, context)
+        
+
+class PostUpdateView(View):
+    template_name = 'apps/update_post.html'
+
+    def get(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        if post.author != request.user:
+            messages.error(request, 'You are not allowed to perform the following operations')
+            return redirect('client-page')
+        
+        form = PostForm(instance=post)
+        context = {'form': form, 'post': post}
+        return render(request, self.template_name, context)
     
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+
+        if post.author != request.user:
+            messages.error(request, 'You are not allowed the following operations')
+            return redirect('client-page')
+
+        form = PostForm(request.POST, instance=post)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Post updated successfully')
+            return redirect('client-page')
+        
+        context = {'form': form, 'post': post}
+        return render(request, self.template_name, context)
+
+class PostDeleteView(LoginRequiredMixin, View):
+    template_name = 'apps/delete-post.html'
+
+    def get(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+
+        if post.author != request.user:
+            messages.error(request, 'Restricted')
+            return redirect('client-page')
+        
+        context = {'post': post}
+        return render(request, self.template_name, context)
+    
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        if post.author != request.user:
+            messages.error(request, 'Restricted')
+            return redirect('client-page')
+        post.delete()
+        messages.success(request, 'Post deleted successfully')
+        return redirect('client-page')
+

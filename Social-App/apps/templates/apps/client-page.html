@@ -8,10 +8,10 @@
     <h1>Welcome, {{request.user.username}}</h1>
     <ul>
         <li>
-            <a href="{% url 'delete-account' %}">Delete Account</a>
+            <a href="{% url 'delete-account' %}"><button>Delete Account</button></a>
         </li>
         <li>
-           <a href="{% url 'update-client' %}">Update Account</a> 
+           <a href="{% url 'update-client' %}"><button>Update Account</button></a> 
         </li>
         <li>
             <form method="post" action="{% url 'logout' %}">
@@ -21,13 +21,23 @@
         </li>
     </ul>
     <h1>Posts</h1>
-    <a href="{% url 'create-post' %}">Create post</a>
+    <a href="{% url 'create-post' %}"><button>Create Post </button></a>
     {% for post in posts %}
         <div style="border:1px solid #111; padding: 10px; margin-bottom: 10px">
             <h2 style="font-family: 'poppins', sans-serif">{{post.title}}</h2>
             <p style="font-family: 'Roboto', sans-serif">{{post.content}}</p>
-            <small style="font-family: 'Caveat', cursive; font-size: 0.75em; color: #333; padding-left: 2em;">. By <b>{{post.author.username}}</b> on <b>{{post.created_at}}</b></small>
+            {% load humanize %}
+            <small style="font-family: 'Caveat', cursive; font-size: 0.75em; color: #333; padding-left: 2em;">. By <b>{{post.author.username}}</b>, <b>{{post.updated_at|naturaltime}}</b></small>
+            {% if request.user == post.author %}
+                <a href="{% url 'post-update' post.pk%}">
+                    <button>Update Post</button>
+                </a>
+                <a href="{% url 'post-delete' post.pk %}">
+                    <button>Delete Post</button>
+                </a>
+            {% endif %}
         </div>
+      
     {% empty %}
         <p>No posts yet.</p>
     {% endfor %}
