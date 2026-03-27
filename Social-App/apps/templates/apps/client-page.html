@@ -7,6 +7,16 @@
 {% block content %}
     <h1>Welcome, {{request.user.username}}</h1>
     <ul>
-        <li><a href="{% url 'delete-account' %}">Delete Account</a> </li>
+        <li>
+            <a href="{% url 'delete-account' %}">Delete Account</a>
+        </li>
+        <li>
+           <a href="{% url 'update-client' %}">Update Account</a> 
+        </li>
     </ul>
+        {% if messages %}
+        {% for message in messages %}
+            <p>{{message}}</p>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

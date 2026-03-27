@@ -1,0 +1,49 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}
+    <title>Update Details</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Update {{request.user.username}} Details</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <h3>Client Info</h3>
+            {{client_form.as_p}}
+        <h3>User Info</h3>
+        <p>
+            {{user_form.username.label_tag}}
+            {{user_form.username}}
+        </p>
+           
+        <button type="submit" name="update_profile">Save Changes</button>
+    </form>
+
+        <hr>
+        <h2>Change Password</h2>
+        <form method="POST" >
+            {% csrf_token %}
+            <p>
+                {{password_form.old_password.label_tag}}
+                {{password_form.old_password}}
+            </p>
+            <p>
+                {{password_form.new_password1.label_tag}}
+                {{password_form.new_password1}}
+            </p>
+            <P>
+                {{password_form.new_password2.label_tag}}
+                {{password_form.new_password2}}
+            </P>
+         
+            <button type="submit" name="change_password">Change Password</button>
+        </form>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{message}}</p>
+        {% endfor %}
+    {% endif %}
+
+  
+{% endblock %}

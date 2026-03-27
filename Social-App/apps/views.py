@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.views import View
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, ClientUpdateForm, UserUpdateForm
 from django.contrib import messages
 from .models import Client
 from django.contrib.auth.models import User
@@ -11,6 +11,8 @@ from django.views.generic.edit import DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.contrib.auth import logout
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 
 # Create your views here.
@@ -95,3 +97,45 @@ class ClientDeleteView(LoginRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         logout(request)
         return super().delete(request, *args, **kwargs)
+    
+class ClientUpdateView(LoginRequiredMixin, View):
+    template_name = 'apps/update-client.html'
+    def get(self, request):
+        client, _ = Client.objects.get_or_create(user=request.user)
+
+        client_form = ClientUpdateForm(instance=client)
+        user_form = UserUpdateForm(instance=request.user)
+        password_form = PasswordChangeForm(user=request.user)
+        context = {
+            'client_form': client_form,
+            'user_form': user_form,
+            'password_form': password_form
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        client, _ = Client.objects.get_or_create(user=request.user)
+
+        client_form = ClientUpdateForm(request.POST, instance=client)
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        password_form = PasswordChangeForm(user=request.user, data=request.POST)
+
+        if 'update_profile' in request.POST:
+            if client_form.is_valid()  and user_form.is_valid():
+                client_form.save()
+                user_form.save()
+                messages.success(request, 'Profile updated successfully')
+                return redirect('client-page')
+        elif 'change_password' in request.POST:
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user) #Keep user logged in
+                messages.success(request, "Password Updated successfully")
+                return redirect('client-page')
+        
+        context = {
+            'client_form': client_form,
+            'user_form': user_form,
+            'password_form': password_form
+            }
+        return render(request, self.template_name, context)

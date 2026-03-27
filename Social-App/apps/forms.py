@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from .models import Client
 from django import forms
+from django.contrib.auth.models import User
 
 class UserRegistrationForm(ModelForm):
     username = forms.CharField(max_length=10)
@@ -15,3 +16,19 @@ class UserRegistrationForm(ModelForm):
             'phone_number': forms.TextInput(attrs={'type': 'tel', 'placeholder': 'Enter your phone number'}),
             'date_of_birth': forms.DateInput(attrs={'type': 'date'})
         }
+
+class ClientUpdateForm(ModelForm):
+   
+    class Meta:
+        model = Client
+        fields = ['name', 'phone_number','id_number', 'email', 'date_of_birth']
+        widgets = {
+            'name': forms.TextInput(attrs={'type': 'text'}),
+            'phone_number': forms.TextInput(attrs={'type': 'tel'}),
+            "id_number": forms.TextInput(attrs={'type': 'number'}),
+            'date_of_birth': forms.TextInput(attrs={'type': 'date'})
+        }
+class UserUpdateForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['username']
