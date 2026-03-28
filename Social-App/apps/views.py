@@ -203,7 +203,7 @@ class PostDeleteView(LoginRequiredMixin, View):
 
     def get(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
-
+            
         if post.author != request.user:
             messages.error(request, 'Restricted')
             return redirect('client-page')
