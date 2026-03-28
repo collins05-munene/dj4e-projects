@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
-from .forms import UserRegistrationForm, ClientUpdateForm, UserUpdateForm, PostForm
+from .forms import UserRegistrationForm, ClientUpdateForm, UserUpdateForm, PostForm, CommentForm
 from django.contrib import messages
-from .models import Client, Post
+from .models import Client, Comment, Post
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
@@ -220,3 +220,39 @@ class PostDeleteView(LoginRequiredMixin, View):
         messages.success(request, 'Post deleted successfully')
         return redirect('client-page')
 
+class CommentCreateView(LoginRequiredMixin, View):
+    
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        form = CommentForm(request.POST)
+
+        parent_id = request.POST.get('parent_id')
+
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.author = request.user
+            comment.post = post
+
+            #reply
+            if parent_id:
+                parent_comment = Comment.objects.get(id=parent_id)
+                comment.parent = parent_comment
+
+            comment.save()
+
+        return redirect('post-detail', pk=post.pk)
+    
+class PostDetailView(View):
+    template_name = 'apps/post-detail.html'
+
+    def get(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+
+        comments = post.comments.filter(parent__isnull=True)
+
+        form = CommentForm()
+        context = {
+            'post': post, 'comments':comments, 'form': form
+        }
+        return render(request, self.template_name, context)
+    

@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Client, Post
+from .models import Client, Comment, Post
 from django import forms
 from django.contrib.auth.models import User
 
@@ -42,3 +42,7 @@ class PostForm(ModelForm):
             'content': forms.Textarea(attrs={'placeholder': 'Write your post'})
         }
 
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']

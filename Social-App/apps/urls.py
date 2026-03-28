@@ -12,5 +12,7 @@ urlpatterns = [
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),
     path('post/create/', views.PostCreateView.as_view(), name='create-post'),
     path('posts/<int:pk>/update/', views.PostUpdateView.as_view(), name='post-update'),
-    path('posts/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post-delete')
+    path('posts/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post-delete'),
+    path('posts/<int:pk>/comment/', views.CommentCreateView.as_view(), name='add-comment'),
+    path('posts/<int:pk>/details/', views.PostDetailView.as_view(), name='post-detail')
 ]
