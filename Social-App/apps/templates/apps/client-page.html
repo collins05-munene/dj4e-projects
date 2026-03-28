@@ -20,11 +20,13 @@
             </form>
         </li>
     </ul>
+    <hr>
     <h1>Posts</h1>
-    <a href="{% url 'create-post' %}"><button>Create Post </button></a>
+    <a href="{% url 'create-post' %}"><button>Create Post </button></a> <hr>
     {% for post in posts %}
+        
         <div style="border:1px solid #111; padding: 10px; margin-bottom: 10px">
-            <h2 style="font-family: 'poppins', sans-serif">{{post.title}}</h2>
+            <a href="{% url 'post-detail' post.pk %}"><h2 style="font-family: 'poppins', sans-serif">{{post.title}}</h2></a>
             <p style="font-family: 'Roboto', sans-serif">{{post.content}}</p>
             {% load humanize %}
             <small style="font-family: 'Caveat', cursive; font-size: 0.75em; color: #333; padding-left: 2em;">. By <b>{{post.author.username}}</b>, <b>{{post.updated_at|naturaltime}}</b></small>
@@ -36,6 +38,7 @@
                     <button>Delete Post</button>
                 </a>
             {% endif %}
+           
         </div>
       
     {% empty %}

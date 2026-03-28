@@ -1,0 +1,40 @@
+{% extends 'apps/base.html' %}
+
+{% block title %}
+    <title>Comment Section</title>
+{% endblock %}
+
+{% block content %}
+    <h1>{{post.title}}</h1>
+    <p>{{post.content}}</p>
+    <hr>
+    <h3>Comments</h3>
+
+    <form method="POST" action="{% url 'add-comment' post.pk %}">
+        {{form.as_p}}
+            {% csrf_token %}
+        <button type="submit">Comment</button>
+    </form>
+    <hr>
+    {% for comment in comments %}
+        <div style="margin-bottom: 10px;">
+            <strong>{{comment.author.username}}</strong>
+            <p>{{comment.content}}</p>
+
+            <!--Reply Form-->
+            <form method="POST" action="{% url 'add-comment' post.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="parent_id" value="{{comment.id}}">
+                <input type="text" name="content" placeholder="Reply...">
+                <button type="submit">Reply</button>
+            </form>
+            <!--Replies-->
+            {% for reply in comment.replies.all %}
+                <div style="margin-left:30px ; border-left: 2px solid #aaa; padding-left:10px;">
+                    <strong>{{reply.author.username}}</strong>
+                    <p>{{reply.content}}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endblock %}
