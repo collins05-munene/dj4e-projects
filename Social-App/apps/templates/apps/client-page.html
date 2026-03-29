@@ -3,63 +3,215 @@
 {% block title %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>Client Page</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --danger: #ef4444;
+            --card-bg: #1e293b;
+            --bg: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --sidebar-w: 260px;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            justify-content: center; /* Centers the content block */
+        }
+
+        /* Main Page Wrapper */
+        .dashboard-wrapper {
+            display: grid;
+            grid-template-columns: var(--sidebar-w) 1fr var(--sidebar-w);
+            gap: 30px;
+            width: 100%;
+            max-width: 1400px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Sticky Sidebars */
+        .sidebar-left, .sidebar-right {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+        .user-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+
+    .action-list {
+        list-style: none;
+        display: flex;
+        gap: 10px;
+    }
+         .btn-primary { background: var(--primary); color: white; }
+    .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); }
+    .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+    .btn-danger:hover { background: var(--danger); color: white; }
+        /* Sidebar Components */
+        .widget {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .widget h3 { font-size: 1rem; margin-bottom: 15px; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
+         .post-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+        /* List Items in Sidebars */
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .list-item:hover { color: var(--primary); }
+        .list-item i { width: 20px; text-align: center; color: var(--text-muted); }
+
+        /* Mock Data: Friends List */
+        .friend-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .avatar-sm { width: 32px; height: 32px; border-radius: 50%; background: #475569; }
+        .online-status { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
+
+        /* Central Feed Styling */
+        .main-feed { max-width: 700px; width: 100%; }
+        .post-card { background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
+
+        /* Responsive: Hide sidebars on smaller screens */
+        @media (max-width: 1100px) {
+            .sidebar-right { display: none; }
+            .dashboard-wrapper { grid-template-columns: var(--sidebar-w) 1fr; }
+        }
+        @media (max-width: 800px) {
+            .sidebar-left { display: none; }
+            .dashboard-wrapper { grid-template-columns: 1fr; }
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-    <h1>Welcome, {{request.user.username}}</h1>
-    <ul>
-        <li>
-            <a href="{% url 'delete-account' %}"><button>Delete Account</button></a>
-        </li>
-        <li>
-           <a href="{% url 'update-client' %}"><button>Update Account</button></a> 
-        </li>
-        <li>
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-            </form>
-        </li>
-    </ul>
-    <hr>
-    <h1>Posts</h1>
-    <a href="{% url 'create-post' %}"><button>Create Post </button></a> <hr>
-    {% for post in posts %}
-        
-        <div style="border:1px solid #111; padding: 10px; margin-bottom: 10px">
-            <a href="{% url 'post-detail' post.pk %}"><h2 style="font-family: 'poppins', sans-serif">{{post.title}}</h2></a>
-            <p style="font-family: 'Roboto', sans-serif">{{post.content}}</p>
-            <form method="POST" action="{% url 'toggle-like' post.pk %}" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" style="border:none; background: none; cursor:pointer;">
-                    {% if post.is_liked %}
-                        <i class="fa-solid fa-heart" style="color: red; font-size: 20px;"></i>
-                    {% else %}
-                        <i class="fa-regular fa-heart" style="color: black; font-size: 20px;"></i>
-                    {% endif %}
-                </button>
-
-            </form>
-             <span>{{ post.likes.count }} likes</span>
-            {% load humanize %}
-            <small style="font-family: 'Caveat', cursive; font-size: 0.75em; color: #333; padding-left: 2em;">. By <b>{{post.author.username}}</b>, <b>{{post.updated_at|naturaltime}}</b></small>
-            {% if request.user == post.author %}
-                <a href="{% url 'post-update' post.pk%}">
-                    <button>Update Post</button>
-                </a>
-                <a href="{% url 'post-delete' post.pk %}">
-                    <button>Delete Post</button>
-                </a>
-            {% endif %}
-           
+ <div class="dashboard-wrapper">
+    
+    <!-- LEFT SIDEBAR: NAVIGATION & UTILITY -->
+    <aside class="sidebar-left">
+        <div class="widget">
+            <h3>Menu</h3>
+            <a href="#" class="list-item"><i class="fa-solid fa-house"></i> Feed</a>
+            <a href="{% url 'update-client' %}" class="list-item"><i class="fa-solid fa-user-gear"></i> Profile Settings</a>
+            <a href="#" class="list-item"><i class="fa-solid fa-heart"></i> Liked Posts</a>
+            <a href="#" class="list-item"><i class="fa-solid fa-coins"></i> Earn Rewards</a>
         </div>
-      
-    {% empty %}
-        <p>No posts yet.</p>
-    {% endfor %}
-    {% if messages %}
-        {% for message in messages %}
-            <p>{{message}}</p>
+
+        <div class="widget">
+            <h3>Support</h3>
+            <a href="#" class="list-item"><i class="fa-solid fa-circle-exclamation"></i> Raise an Issue</a>
+            <a href="#" class="list-item"><i class="fa-solid fa-book"></i> Community Guidelines</a>
+        </div>
+          <div class="user-header">
+            <ul class="action-list">
+                <li>
+                    <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                        {% csrf_token %}
+                    <button type="submit" class="btn-outline">Logout</button>
+                </form>
+            </li>
+            <li><a href="{% url 'delete-account' %}" class="btn-link btn-danger">Delete</a></li>
+        </ul>
+    </div>
+    </aside>
+
+    <!-- CENTER FEED: YOUR EXISTING POSTS CODE -->
+    <main class="main-feed">
+        <div class="user-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h1>Welcome, {{request.user.username}}</h1>
+            <a href="{% url 'create-post' %}" style="background: var(--primary); padding: 10px 20px; border-radius: 10px; color: white; text-decoration: none;">+ New Post</a>
+        </div>
+
+        <!-- Loop through posts here as per your original code -->
+        {% for post in posts %}
+        <div class="post-card">
+            <a href="{% url 'post-detail' post.pk %}" style="text-decoration: none; color: white;"><h2>{{post.title}}</h2></a>
+            <p style="color: var(--text-muted); margin-top: 10px;">{{post.content}}</p>
+            <div style="margin-top: 15px; display: flex; align-items: center; gap: 15px;">
+                 <form method="POST" action="{% url 'toggle-like' post.pk %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" style="background: none; padding: 0; vertical-align: middle;">
+                            {% if post.is_liked %}
+                                <i class="fa-solid fa-heart" style="color: #ef4444; font-size: 22px;"></i>
+                            {% else %}
+                                <i class="fa-regular fa-heart" style="color: var(--text-muted); font-size: 22px;"></i>
+                            {% endif %}
+                        </button>
+                    </form>
+                <span>{{ post.likes.count }}</span>
+                
+                <div class="post-meta">
+                    {% load humanize %}
+                    <span class="author-info">By <b>@{{post.author.username}}</b> • {{post.updated_at|naturaltime}}</span>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    {% endif %}
+    </main>
+
+    <!-- RIGHT SIDEBAR: FRIENDS & CHAT -->
+    <aside class="sidebar-right">
+        <div class="widget">
+            <h3>Active Friends</h3>
+            <div class="friend-row">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="avatar-sm"></div> <span>Alex_Design</span>
+                </div>
+                <div class="online-status"></div>
+            </div>
+            <div class="friend-row">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="avatar-sm"></div> <span>Sarah_Dev</span>
+                </div>
+                <div class="online-status"></div>
+            </div>
+            <a href="#" style="color: var(--primary); font-size: 0.8rem; text-decoration: none;">View All Friends</a>
+        </div>
+
+        <div class="widget">
+            <h3>Messages</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">No new messages.</p>
+            <button style="width: 100%; margin-top: 15px; background: rgba(99, 102, 241, 0.1); border: 1px solid var(--primary); color: var(--primary); padding: 8px; border-radius: 8px; cursor: pointer;">
+                Open Chat
+            </button>
+        </div>
+        
+        <div class="widget">
+            <h3>Trending</h3>
+            <a href="#" class="list-item" style="font-size: 0.9rem;">#DjangoSocial</a>
+            <a href="#" class="list-item" style="font-size: 0.9rem;">#WebDev2024</a>
+        </div>
+    </aside>
+
+</div>
 {% endblock %}
