@@ -87,6 +87,10 @@ class CustomLoginView(View):
 class ClientPage(LoginRequiredMixin, View):
     def get(self, request):
         posts = Post.objects.all().order_by('-updated_at')
+        for post in posts:
+            post.is_liked = request.user in post.likes.all()
+
+   
         context = {'posts': posts}
         return render(request, 'apps/client-page.html', context)
     
@@ -247,12 +251,23 @@ class PostDetailView(View):
 
     def get(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
+        is_liked = request.user in post.likes.all()
 
         comments = post.comments.filter(parent__isnull=True)
 
         form = CommentForm()
         context = {
-            'post': post, 'comments':comments, 'form': form
+            'post': post, 'comments':comments, 'form': form, 'is_liked': is_liked
         }
         return render(request, self.template_name, context)
     
+class ToggleLikeView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+
+        if request.user in post.likes.all():
+            post.likes.remove(request.user)
+        else:
+            post.likes.add(request.user)
+
+        return redirect('client-page')

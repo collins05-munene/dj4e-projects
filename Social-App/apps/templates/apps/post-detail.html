@@ -1,14 +1,28 @@
 {% extends 'apps/base.html' %}
 
 {% block title %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>Comment Section</title>
 {% endblock %}
 
 {% block content %}
     <h1>{{post.title}}</h1>
     <p>{{post.content}}</p>
+    <form method="POST" action="{% url 'toggle-like' post.pk %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" style="border:none; background: none; cursor:pointer;">
+                    {% if is_liked %}
+                        <i class="fa-solid fa-heart" style="color: red; font-size: 20px;"></i>
+                    {% else %}
+                        <i class="fa-regular fa-heart" style="color: black; font-size: 20px;"></i>
+                    {% endif %}
+                </button>
+
+            </form>
+            <span>{{ post.likes.count }} likes</span>
     <hr>
     <h3>Comments</h3>
+
 
     <form method="POST" action="{% url 'add-comment' post.pk %}">
         {{form.as_p}}
