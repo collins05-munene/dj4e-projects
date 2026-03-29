@@ -86,11 +86,10 @@ class CustomLoginView(View):
 
 class ClientPage(LoginRequiredMixin, View):
     def get(self, request):
-        posts = Post.objects.all().order_by('-updated_at')
+        posts = Post.objects.all().prefetch_related('likes').order_by('-updated_at')
         for post in posts:
             post.is_liked = request.user in post.likes.all()
 
-   
         context = {'posts': posts}
         return render(request, 'apps/client-page.html', context)
     
